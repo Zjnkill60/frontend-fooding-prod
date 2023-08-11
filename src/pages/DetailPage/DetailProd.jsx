@@ -318,7 +318,7 @@ const DetailProd = () => {
 
                                                 <img className="img-thumbnail" draggable={false}
                                                     style={{ flex: '1 0 100%', padding: '0 10px' }}
-                                                    shape="square" src={`${baseURL}/images/${item?.thumbnail}`} />
+                                                    shape="square" src={`${baseURL}/images/${thumbnail}`} />
 
 
                                             </div>
@@ -641,7 +641,7 @@ const DetailProd = () => {
                                         <Col xs={24} sm={24} md={24} lg={24} xl={3} xxl={3} >
                                             <Row gutter={[0, 5]} style={{ position: 'relative' }}>
                                                 <Col span={24}>
-                                                    <Avatar shape="square" size={50} src={`${baseURL}/images/'${item?.avatar}`} />
+                                                    <Avatar shape="square" size={50} src={`${baseURL}/images/${item?.avatar}`} />
                                                 </Col>
                                                 <Col span={24} style={{ fontWeight: 600 }}>
                                                     {item?.name}
