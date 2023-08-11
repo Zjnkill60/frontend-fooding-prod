@@ -285,7 +285,7 @@ const Home = () => {
             <Row className='flashsale-container'>
                 <Col span={24} className='title-flashsale'>
                     <img src='https://cdn0.fahasa.com/media/wysiwyg/icon-menu/ico_flashsale@3x.png' />
-                    <span style={{ fontSize: 17, fontWeight: 700, padding: '0 10px', borderRight: '2px solid #666666' }}>FLASH SALE </span>
+                    <span style={{ fontSize: 17, fontWeight: 600, padding: '0 8px', borderRight: '2px solid #666666' }}>FLASH SALE </span>
                     <span className='time-end'>Kết Thúc Trong   </span>
                     <span className='time-countdown'>{hour < 10 ? `0${hour}` : hour}</span>
                     <span style={{ fontWeight: 700 }}>:</span>
@@ -461,7 +461,7 @@ const Home = () => {
             <Row className='flashsale-container code-seller'>
                 <Col span={24} className='title-flashsale'>
                     <img src='https://cdn0.fahasa.com/skin/frontend/ma_vanese/fahasa/images/ico_menu_red.svg' />
-                    <span style={{ fontSize: 17, fontWeight: 700, padding: '0 10px' }}>
+                    <span style={{ fontSize: 17, fontWeight: 600, padding: '0 10px' }}>
                         MÃ GIẢM GIÁ HIỆN HÀNH
                     </span>
 
@@ -551,7 +551,7 @@ const Home = () => {
             <Row className='flashsale-container trend-shopping'>
                 <Col span={24} className='title-flashsale'>
                     <img src='https://cdn0.fahasa.com/skin/frontend/base/default/images/ico_dealhot.png' />
-                    <span style={{ fontSize: 17, fontWeight: 700, padding: '0 10px' }}>XU HƯỚNG MUA SẮM </span>
+                    <span style={{ fontSize: 17, fontWeight: 600, padding: '0 10px' }}>XU HƯỚNG MUA SẮM </span>
 
 
                 </Col>
