@@ -33,7 +33,7 @@ const DrawerViewDataAdmin = (props) => {
 
 
                 </Descriptions>
-                <Avatar style={{ marginTop: 50 }} size={128} src={baseURL + 'images/' + dataClick?.avatar} />
+                <Avatar style={{ marginTop: 50 }} size={128} src={`${baseURL}/images/${dataClick?.avatar}`} />
             </Drawer>
         </>
     )

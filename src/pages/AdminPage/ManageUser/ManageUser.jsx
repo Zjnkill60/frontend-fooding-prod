@@ -68,7 +68,7 @@ const ManageUser = () => {
             let data = res.data?.listUser?.map((item, index) => {
                 return {
                     name: item.name,
-                    avatar: <Avatar src={baseURL + 'images/' + item.avatar} />,
+                    avatar: <Avatar src={`${baseURL}/images/${item.avatar}`} />,
                     role: item.role,
                     phoneNumber: item.phoneNumber,
                     orderHistory: item.orderHistory?.length,
@@ -111,7 +111,7 @@ const ManageUser = () => {
             let data = res.data?.listUser?.map((item, index) => {
                 return {
                     name: item.name,
-                    avatar: <Avatar key={index} src={baseURL + 'images/' + item.avatar} />,
+                    avatar: <Avatar key={index} src={`${baseURL}/images/${item.avatar}`} />,
                     role: item.role,
                     phoneNumber: item.phoneNumber,
                     orderHistory: item.orderHistory?.length,

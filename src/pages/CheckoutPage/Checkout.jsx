@@ -383,7 +383,7 @@ const Checkout = () => {
                                                     <Row key={index} gutter={20}>
                                                         <Col span={6}>
                                                             <Badge count={item?.quantity}>
-                                                                <Avatar shape="square" size={80} src={baseURL + 'images/' + item?.thumbnail} />
+                                                                <Avatar shape="square" size={80} src={`${baseURL}/images/${item?.thumbnail}`} />
                                                             </Badge>
 
                                                         </Col>

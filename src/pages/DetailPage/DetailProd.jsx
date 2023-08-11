@@ -290,7 +290,7 @@ const DetailProd = () => {
                                                 return (<div onMouseOver={() => handleSetImage(img, index)}>
                                                     <Avatar className={indexActive == index ? "img-active " : null}
                                                         style={{ marginTop: 5, height: 100, width: '100%', objectFit: 'cover' }}
-                                                        shape="square" key={index} src={baseURL + 'images/' + img} />
+                                                        shape="square" key={index} src={`${baseURL}/images/${img}`} />
                                                 </div>
                                                 )
                                             })}
@@ -303,7 +303,7 @@ const DetailProd = () => {
                                                     return (
                                                         <img ref={image} className="img-thumbnail" draggable={false}
                                                             style={{ flex: '1 0 100%' }}
-                                                            shape="square" key={index} src={baseURL + 'images/' + img} />
+                                                            shape="square" key={index} src={`${baseURL}/images/${img}`} />
 
                                                     )
                                                 })}
@@ -318,7 +318,7 @@ const DetailProd = () => {
 
                                                 <img className="img-thumbnail" draggable={false}
                                                     style={{ flex: '1 0 100%', padding: '0 10px' }}
-                                                    shape="square" src={baseURL + 'images/' + thumbnail} />
+                                                    shape="square" src={`${baseURL}/images/${item?.thumbnail}`} />
 
 
                                             </div>
@@ -531,7 +531,7 @@ const DetailProd = () => {
                                                 width: '100%',
 
                                             }}
-                                            cover={<img draggable={false} alt="example" src={baseURL + 'images/' + item?.thumbnail} />}
+                                            cover={<img draggable={false} alt="example" src={`${baseURL}/images/${item?.thumbnail}`} />}
                                         >
                                             <Row className='content-card'>
                                                 <Col span={24} className='title-card'>
@@ -585,7 +585,7 @@ const DetailProd = () => {
                         <Col span={24}>
                             {infoAccount?.isAuthenticated ? <Card
                                 title={<span style={{ fontSize: 15, fontWeight: 500, color: '#333' }}>
-                                    <Avatar style={{ marginRight: 10 }} shape="square" size={50} src={baseURL + 'images/' + infoAccount?.info?.avatar} />
+                                    <Avatar style={{ marginRight: 10 }} shape="square" size={50} src={`${baseURL}/images/${infoAccount?.info?.avatar}`} />
                                     Xin chào {infoAccount?.info?.name} ! Hãy bình luận để đánh giá sản phẩm
                                     <Rate onChange={value => setRate(value)} style={{ marginLeft: 15 }} defaultValue={rate} /></span>}
                                 bordered={false}
@@ -641,7 +641,7 @@ const DetailProd = () => {
                                         <Col xs={24} sm={24} md={24} lg={24} xl={3} xxl={3} >
                                             <Row gutter={[0, 5]} style={{ position: 'relative' }}>
                                                 <Col span={24}>
-                                                    <Avatar shape="square" size={50} src={baseURL + 'images/' + item?.avatar} />
+                                                    <Avatar shape="square" size={50} src={`${baseURL}/images/'${item?.avatar}`} />
                                                 </Col>
                                                 <Col span={24} style={{ fontWeight: 600 }}>
                                                     {item?.name}
@@ -662,7 +662,7 @@ const DetailProd = () => {
                                                 {item?.image?.length > 0 ? <Space style={{ maxWidth: '100vw', overflow: 'scroll' }}>
                                                     {item.image.map((item, index) => {
                                                         return (
-                                                            <Avatar onClick={() => handlePreviewImageComment(item)} style={{ cursor: 'pointer' }} size={80} shape="square" key={index} src={baseURL + 'images/' + item} />
+                                                            <Avatar onClick={() => handlePreviewImageComment(item)} style={{ cursor: 'pointer' }} size={80} shape="square" key={index} src={`${baseURL}/images/${item}`} />
                                                         )
                                                     })}
                                                 </Space> : <></>}

@@ -57,7 +57,7 @@ const DrawerViewOrder = (props) => {
                                 <>
                                     <Row style={{ display: 'flex', alignItems: 'center' }}>
                                         <Col xs={7} sm={7} md={5} lg={5} xl={4} xxl={4} >
-                                            <Avatar size={80} shape='square' src={baseURL + 'images/' + order?.thumbnail} />
+                                            <Avatar size={80} shape='square' src={`${baseURL}/images/${order?.thumbnail}`} />
                                         </Col>
                                         <Col xs={12} sm={13} md={13} lg={13} xl={14} xxl={14} >
                                             {order.name}

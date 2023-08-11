@@ -217,7 +217,7 @@ const Header = () => {
                                 <Row >
                                     <Col span={5}>
                                         <Badge count={item?.quantity}>
-                                            <Avatar shape="square" size={60} src={baseURL + 'images/' + item.thumbnail} />
+                                            <Avatar shape="square" size={60} src={`${baseURL}/images/${item?.thumbnail}`} />
                                         </Badge>
                                     </Col>
                                     <Col span={13} style={{ color: '#333', fontSize: 14, maxHeight: 40, overflow: 'hidden' }}>

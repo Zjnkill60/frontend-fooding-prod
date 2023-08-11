@@ -59,13 +59,13 @@ const ModalUpdateProduct = (props) => {
 
         })
         let imgThumbnail = {
-            url: baseURL + 'images/' + dataClick?.thumbnail,
+            url: `${baseURL}/images/${dataClick?.thumbnail}`,
             urlUpload: dataClick?.thumbnail
         }
 
         let imgSlider = dataClick?.slider?.map(item => {
             return {
-                url: baseURL + 'images/' + item,
+                url: `${baseURL}/images/${item}`,
                 urlUpload: item
             }
         })

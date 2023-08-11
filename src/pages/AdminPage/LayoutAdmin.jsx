@@ -138,7 +138,7 @@ const LayoutAdmin = (props) => {
 
                 <Row style={{ padding: 10 }} gutter={[0, 10]}>
                     <Col span={24} style={{ textAlign: 'center' }}>
-                        <Avatar src={baseURL + 'images/' + dataUser?.info?.avatar} size={64} icon={<UserOutlined />} />
+                        <Avatar src={`${baseURL}/images/${dataUser?.info?.avatar}`} size={64} icon={<UserOutlined />} />
 
                     </Col>
                     <Col span={24} style={{ textAlign: 'center', color: '#fff' }}>

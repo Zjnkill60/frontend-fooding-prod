@@ -91,7 +91,7 @@ const OrderIndex = () => {
                                                     <Col key={index} span={24} style={{ backgroundColor: '#fff', borderRadius: 5 }}>
                                                         <Row style={{ display: 'flex', alignItems: 'center', padding: '20px 10px' }}>
                                                             <Col span={4}>
-                                                                <Avatar size={100} shape="square" src={baseURL + 'images/' + item?.thumbnail} />
+                                                                <Avatar size={100} shape="square" src={`${baseURL}/images/${item?.thumbnail}`} />
                                                             </Col>
                                                             <Col span={9} style={{ color: '#333333', padding: '0px 10px' }}>
                                                                 {item?.mainText}
@@ -126,7 +126,7 @@ const OrderIndex = () => {
                                                     <Col key={index} span={24} style={{ backgroundColor: '#fff', borderRadius: 5 }}>
                                                         <Row style={{ padding: '18px 10px' }} >
                                                             <Col span={4} style={{ display: 'grid', placeItems: 'center' }}>
-                                                                <Avatar size={80} shape="square" src={baseURL + 'images/' + item?.thumbnail} />
+                                                                <Avatar size={80} shape="square" src={`${baseURL}/images/${item?.thumbnail}`} />
                                                             </Col>
                                                             <Col xs={18} sm={20} md={0} lg={0} xl={0} xxl={0} style={{ marginLeft: 'auto' }} >
                                                                 <Row gutter={[0, 7]}>

@@ -40,9 +40,9 @@ const DrawerViewDataProduct = (props) => {
                 </Descriptions>
 
                 <Space>
-                    <Avatar shape='square' style={{ marginTop: 50 }} size={128} src={baseURL + 'images/' + dataClick?.thumbnail} />
+                    <Avatar shape='square' style={{ marginTop: 50 }} size={128} src={`${baseURL}/images/${dataClick?.thumbnail}`} />
                     {dataClick?.slider?.map(item => {
-                        return <Avatar shape='square' style={{ marginTop: 50 }} size={128} src={baseURL + 'images/' + item} />
+                        return <Avatar shape='square' style={{ marginTop: 50 }} size={128} src={`${baseURL}/images/${item}`} />
 
                     })}
 
