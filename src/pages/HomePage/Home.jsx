@@ -318,7 +318,7 @@ const Home = () => {
                                                 <img className='img-time-out' style={{ objectFit: 'cover', width: '60%', height: 70 }}
                                                     src='https://cdn0.fahasa.com/skin/frontend/ma_vanese/fahasa/images/flashsale/Chay-hang-icon.svg' />
                                             </div> : <></>}
-                                            <img className='img-card' style={{ objectFit: 'cover' }} draggable={false} alt="example" src={baseURL + 'images/' + item?.thumbnail} />
+                                            <img className='img-card' style={{ objectFit: 'cover' }} draggable={false} alt="example" src={`${baseURL}/images/${item?.thumbnail}`} />
                                         </div>}
                                     >
                                         <Row className='content-card'>
@@ -583,7 +583,7 @@ const Home = () => {
                                             width: '100%',
 
                                         }}
-                                        cover={<img className='img-card' style={{ objectFit: 'cover' }} draggable={false} alt="example" src={baseURL + 'images/' + item?.thumbnail} />}
+                                        cover={<img className='img-card' style={{ objectFit: 'cover' }} draggable={false} alt="example" src={`${baseURL}/images/${item?.thumbnail}`} />}
 
                                     >
                                         <Row className='content-card'>
