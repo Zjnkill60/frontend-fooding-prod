@@ -1,0 +1,25 @@
+@media only screen and (max-width: 992px) {
+    .content-admin {
+        margin: 5px !important;
+        padding: 10px !important;
+        min-height: 100vh;
+    }
+
+    .header-content {
+        margin-top: 30px !important;
+    }
+
+    .table-content {
+        margin-top: 20px !important;
+        max-width: 100vw;
+        overflow: scroll;
+    }
+
+    .ant-drawer-content-wrapper {
+        width: 90vw !important;
+    }
+
+    .hide-lg {
+        display: none;
+    }
+}

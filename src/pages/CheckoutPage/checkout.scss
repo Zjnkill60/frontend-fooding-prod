@@ -1,0 +1,34 @@
+@media (max-width: 992px) {
+    .hide-md {
+        display: none !important;
+    }
+
+    .checkout-container {
+        max-width: 760px !important;
+
+    }
+
+    .info-banking-mobile {
+        margin-top: 20px !important;
+    }
+
+
+}
+
+@media (max-width: 578px) {
+    .hide-sm {
+        display: none !important;
+    }
+
+    .btn-checkout-sm {
+        width: 100% !important;
+    }
+
+    .ant-result {
+        padding: 10px !important;
+    }
+
+
+
+
+}

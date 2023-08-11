@@ -1,0 +1,330 @@
+.detail-page-content {
+    min-height: 300px;
+    background-color: #fff;
+    border-radius: 6px;
+    padding: 10px;
+
+    .content-left {
+        .img-thumbnail {
+            height: 450px;
+            width: 100%;
+            object-fit: cover;
+
+        }
+
+        .slider-image-detail {
+            display: flex;
+            max-width: 100%;
+            overflow: scroll;
+            scroll-behavior: smooth;
+            scroll-snap-type: x mandatory;
+            position: relative;
+
+            img {
+                scroll-snap-align: start;
+            }
+        }
+
+        .slider-image-detail::-webkit-scrollbar {
+            display: none;
+            /* for Chrome, Safari, and Opera */
+        }
+    }
+
+    .content-right {
+        padding: 10px 20px;
+        margin-left: auto;
+
+        .title-prod {
+            font-size: 22px !important;
+            color: #333;
+
+        }
+
+        .sub-title-prod {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+        }
+
+
+
+        .price-prod {
+            .main-price {
+                font-size: 32px;
+                color: #c92127;
+                font-weight: 700;
+            }
+
+            .sub-price {
+                font-size: 15;
+                color: #333;
+                text-decoration: line-through;
+                margin: 0 10px;
+            }
+
+            .percent-price {
+                color: #fff;
+                padding: 6px;
+                font-size: 14px;
+                border-radius: 4px;
+                background-color: #c92127;
+                font-weight: 700;
+            }
+        }
+    }
+}
+
+
+.card-seller {
+    border: 1px solid #ededed;
+}
+
+.carousel-card::-webkit-scrollbar {
+    display: none;
+    /* for Chrome, Safari, and Opera */
+}
+
+.card-slider-flashsale {
+    overflow: scroll;
+    scroll-behavior: smooth;
+    display: flex !important;
+    flex-wrap: nowrap;
+    align-items: center;
+
+
+    .card {
+        flex: 1 0 20%;
+        border-radius: 0px !important;
+
+
+        .content-card {
+            height: 160px;
+            position: relative;
+
+            .title-card {
+                height: 40px;
+                overflow: hidden;
+                font-size: 14px;
+                color: #333333;
+                font-weight: 500;
+            }
+
+
+
+            .price-card {
+
+                position: absolute;
+                bottom: 50%;
+                font-size: 18px;
+                color: #f7941e;
+                font-weight: 600;
+                margin: 7px 0 3px;
+            }
+
+            .old-price-card {
+                position: absolute;
+                bottom: 37%;
+                font-size: 14px;
+                color: #888888;
+                text-decoration: line-through;
+            }
+
+
+
+            .sold-card {
+                position: absolute;
+                bottom: 0;
+                width: 100%;
+                height: 18px;
+                background-color: #C92127;
+                display: grid;
+                place-items: center;
+                color: #fff;
+                border-radius: 20px;
+                font-size: 13px;
+
+            }
+
+            .rate-card {
+                position: absolute;
+                bottom: 20%;
+                display: flex;
+                align-items: center;
+
+                .number-comment {
+                    margin-top: 1px;
+                    margin-left: 10px;
+                    color: #f7941e;
+                }
+            }
+
+        }
+
+
+
+        img {
+            height: 200px;
+            object-fit: cover;
+            border-radius: 0px !important;
+
+        }
+    }
+}
+
+.card-slider-flashsale::-webkit-scrollbar {
+    display: none;
+    /* for Chrome, Safari, and Opera */
+}
+
+.ant-card-head {
+    padding: 0 10px !important;
+}
+
+.ant-upload-list.ant-upload-list-picture {
+    position: fixed;
+    right: 0px;
+    top: 10%;
+    z-index: 20;
+}
+
+.arrow-control {
+    position: absolute;
+    font-size: 17px;
+    padding: 10px;
+    background-color: #fafafa;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    color: #333;
+    z-index: 10;
+}
+
+.active-tabs-comments {
+    border-bottom: 2px solid #c92127;
+    color: #C92127 !important;
+    font-weight: 700;
+}
+
+
+.arrow-control:first-child {
+    left: -15px;
+    top: 45%;
+
+}
+
+.arrow-control:last-child {
+    right: -5px;
+    top: 45%;
+
+}
+
+@media only screen and (max-width: 600px) {
+    .container-content-left {
+        padding: 0px !important;
+    }
+
+    .detail-content {
+        padding: 0px !important;
+    }
+
+    .detail-page-content {
+        padding: 0px !important;
+    }
+
+    .hide-detail {
+        display: none !important;
+    }
+
+    .img-thumbnail {
+        height: 350px !important;
+        width: 100% !important;
+        object-fit: cover;
+        margin: 0 auto;
+
+    }
+
+    .card-seller {
+        flex: 1 0 80% !important;
+        border: 1px solid #dddddd;
+    }
+
+    .card {
+        flex: 1 0 45% !important;
+    }
+
+    .ant-modal {
+        width: 100% !important;
+    }
+
+    .ant-modal-content {
+        padding: 0px !important;
+    }
+
+}
+
+@media (min-width: 601px) and (max-width: 998px) {
+    .card {
+        flex: 1 0 33% !important;
+    }
+
+    .detail-content {
+        max-width: 760px !important;
+        margin: 0 auto !important;
+
+    }
+
+    .code-seller-content {
+        max-width: 760px !important;
+
+
+    }
+
+    .hide-detail {
+        display: none !important;
+    }
+
+    .slider-image-detail {
+        height: 350px !important;
+        width: 50% !important;
+        object-fit: cover;
+        margin: 0 auto;
+
+    }
+
+    .card-seller {
+        flex: 1 0 47% !important;
+        border: 1px solid #dddddd;
+    }
+
+    .ant-modal {
+        width: 80% !important;
+    }
+
+    .ant-modal-content {
+        padding: 0px !important;
+    }
+
+
+
+}
+
+
+@media only screen and (max-width: 1200px) {
+    .timer-comment-mobile {
+        position: absolute;
+        right: 10px;
+        top: 20%;
+
+    }
+}
+
+.img-active {
+    border: 2px solid #c92127 !important;
+    border-radius: 3px;
+    transform: translateX(-5%);
+    transition: 0.2s ease-in-out;
+
+
+}
