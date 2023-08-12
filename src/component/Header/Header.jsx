@@ -6,13 +6,14 @@ import { useNavigate } from "react-router-dom"
 import { GoogleLogin } from 'react-google-login';
 import ModalSendSMS from "../Modal/ModalSendSMS"
 import { useDispatch, useSelector } from "react-redux"
-import { handleLoginGoogle, handleLogout } from "../../service/api"
+import { handleFilterNameProduct, handleLoginGoogle, handleLogout } from "../../service/api"
 import { handleDispatchLogin, handleDispatchLogout } from "../../redux/account/accountSlice"
 import DrawerMenuMoblie from "./DrawerMenuMoblie"
 
 const baseURL = import.meta.env.VITE_URL_BACKEND
 
 const Header = () => {
+    const [dataSearch, setDataSearch] = useState([])
     const [dataLoginGoogle, setDataLoginGoogle] = useState(null)
     const [isModalSendSmsOpen, setIsModalSendSmsOpen] = useState(false);
     //drawer
@@ -208,7 +209,7 @@ const Header = () => {
 
     const content = (
         <Row style={{ maxWidth: 500 }}>
-            <Row className="cart-header-list-item" style={{ maxHeight: 400, overflow: 'scroll' }}>
+            <Row className="cart-header-list-item" style={{ maxHeight: 300, overflow: 'scroll' }}>
                 {dataCart?.items?.length > 0 ? dataCart.items.map((item, index) => {
                     return (
                         <>
@@ -242,6 +243,41 @@ const Header = () => {
         </Row>
     );
 
+    const contentInput = (
+        <div className="cart-header-list-item" style={{ maxHeight: 300, overflow: 'scroll' }}>
+            {dataSearch?.length > 0 ? dataSearch?.map((item, index) => {
+                return (
+                    <>
+                        <Row onClick={() => handleNavigateDetailPage(item)} style={{ maxWidth: 550 }} key={index}>
+                            <Col span={5}>
+                                <Avatar src={`${baseURL}/images/${item?.thumbnail}`} size={60} shape="square" />
+                            </Col>
+                            <Col span={13} style={{ fontSize: 13, maxHeight: 40, overflow: 'hidden' }}>
+                                {item.mainText}
+                            </Col>
+                            <Col span={5} style={{ fontSize: 14, fontWeight: 600, marginLeft: 'auto' }}>
+                                {formatter.format(item.price)}đ
+                            </Col>
+                        </Row>
+                        <Divider />
+                    </>
+
+                )
+            }) : <>Không có sản phẩm nào , hãy nhập tên sản phẩm</>}
+
+        </div>
+
+
+    );
+
+    const handleChangeInput = async (e) => {
+        let res = await handleFilterNameProduct(1, 10, e.target.value)
+
+        if (res && res.data) {
+            setDataSearch(res.data?.listProduct)
+        }
+    }
+
     useEffect(() => {
         window.addEventListener('scroll', handleScroll)
 
@@ -250,7 +286,7 @@ const Header = () => {
         };
     }, [])
 
-    console.log('dataCart : ', dataCart)
+
 
 
 
@@ -288,20 +324,25 @@ const Header = () => {
 
 
                                 <Col xs={16} sm={19} md={20} lg={16} xl={16} xxl={16} className="container-input-header" >
-                                    <Row className="height-input" style={{ border: '1px solid #CDCFD0', height: '45px', borderRadius: 10, padding: '0 10px', display: 'flex', alignItems: 'center', width: '100%' }}>
-                                        <Col xs={22} sm={23} md={23} lg={18} xl={18} xxl={18} style={{ height: '100%' }}>
-                                            <input style={{
-                                                height: '100%', width: '100%', fontSize: 15,
-                                                border: 'none', outline: 'none', padding: '0 20px', borderRadius: 5
-                                            }}
-                                                placeholder="Tìm kiếm sản phẩm mong muốn ...." />
-                                        </Col>
-                                        <Col className="hide-sm" style={{ marginLeft: 'auto' }}>
-                                            <Button style={{ width: 70, backgroundColor: '#c92127', borderRadius: 10 }} type="primary" >
-                                                <SearchOutlined style={{ fontSize: 20 }} />
-                                            </Button>
-                                        </Col>
-                                    </Row>
+                                    <Popover placement="bottom" content={contentInput} trigger={'click'}  >
+                                        <Row className="height-input" style={{ border: '1px solid #CDCFD0', height: '45px', borderRadius: 10, padding: '0 10px', display: 'flex', alignItems: 'center', width: '100%' }}>
+                                            <Col xs={22} sm={23} md={23} lg={18} xl={18} xxl={18} style={{ height: '100%' }}>
+
+                                                <input onChange={(e) => handleChangeInput(e)} style={{
+                                                    height: '100%', width: '100%', fontSize: 15,
+                                                    border: 'none', outline: 'none', padding: '0 20px', borderRadius: 5
+                                                }}
+                                                    placeholder="Tìm kiếm sản phẩm mong muốn ...." />
+
+
+                                            </Col>
+                                            <Col className="hide-sm" style={{ marginLeft: 'auto' }}>
+                                                <Button style={{ width: 70, backgroundColor: '#c92127', borderRadius: 10 }} type="primary" >
+                                                    <SearchOutlined style={{ fontSize: 20 }} />
+                                                </Button>
+                                            </Col>
+                                        </Row>
+                                    </Popover>
                                 </Col>
 
                                 <Col style={{ marginLeft: 40 }} xs={0} sm={0} md={0} lg={2} xl={2} xxl={2} >
