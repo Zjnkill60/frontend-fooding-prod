@@ -1,10 +1,10 @@
-import { Avatar, Breadcrumb, Button, Card, Col, Divider, Modal, Rate, Row, Space, Upload, message } from "antd";
+import { Avatar, Breadcrumb, Button, Card, Col, Divider, Modal, Rate, Row, Skeleton, Space, Upload, message } from "antd";
 import { useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux"
 import './detail.scss'
 import { MinusOutlined, PlusOutlined, ShoppingCartOutlined, LeftOutlined, RightOutlined, LikeOutlined } from '@ant-design/icons'
-import { fetchCommentByIdProduct, handleCreateNewComment, handleUploadFile } from "../../service/api";
+import { fetchCommentByIdProduct, handleCreateNewComment, handleFetchProductPaginate, handleFindOneProd, handleUploadFile } from "../../service/api";
 import moment from 'moment'
 import ModalPreviewImageComments from "./ModalPreviewImageComment";
 import { handleAddItemToCart } from "../../redux/order/orderSlice";
@@ -80,7 +80,7 @@ const DetailProd = () => {
 
     const handleNavigateDetailPage = (prod) => {
         let nameQuery = slug(prod?.mainText)
-        navigate(`/product/${nameQuery}?id=${prod?._id}`, { state: { prod, items: location.state?.items } })
+        navigate(`/product/${nameQuery}?id=${prod?._id}`, { state: { prod } })
 
     }
     //upload file
@@ -175,6 +175,8 @@ const DetailProd = () => {
     }
 
     //add cart
+    const [dataProd, setDataProd] = useState(null)
+    const [dataRecomment, setDataRecomment] = useState(null)
     const [priceItem, setPriceItem] = useState("")
     const valueQuantityPc = useRef()
     const valueQuantityMobile = useRef()
@@ -211,6 +213,7 @@ const DetailProd = () => {
 
     const handleDispatchItemToCart = (type, action) => {
         distpach(handleAddItemToCart({
+            _id: location.state?.prod?._id,
             price: priceItem,
             thumbnail: thumbnail,
             quantity: type == "mobile" ? +valueQuantityMobile.current?.value : +valueQuantityPc.current?.value,
@@ -223,24 +226,44 @@ const DetailProd = () => {
         }
     }
 
-    useEffect(() => {
-        let isRecur = false
-        location.state?.prod?.slider.map(img => {
-            if (img.includes(location.state?.prod?.thumbnail)) {
-                isRecur = true
+    const fetchFindOneProdById = async () => {
+        setDataProd(null)
+        let res = await handleFindOneProd(location.state?.prod?._id)
+        if (res && res.data) {
+            let isRecur = false
+            res.data?.product?.slider.map(img => {
+                if (img.includes(res.data?.product?.thumbnail)) {
+                    isRecur = true
+                }
+            })
+            if (!isRecur) {
+                res.data?.product?.slider.unshift(res.data?.product?.thumbnail)
             }
-        })
-        if (!isRecur) {
-            location.state?.prod?.slider.unshift(location.state?.prod?.thumbnail)
-        }
 
-        setPriceItem(location.state?.prod?.priceFlashSale && location.state?.isFlashsale == true ?
-            location.state?.prod?.priceFlashSale : location.state?.prod?.price)
-        setListImg(location.state?.prod?.slider)
-        setThumbnail(location.state?.prod?.thumbnail)
+            setDataProd(res?.data?.product)
+            setPriceItem(res?.data?.product?.priceFlashSale && location.state?.isFlashsale == true ?
+                res?.data?.product?.priceFlashSale : res?.data?.product?.price)
+            setListImg(res?.data?.product?.slider)
+            setThumbnail(res?.data?.product?.thumbnail)
+        }
+    }
+
+    const fetchListProdRecommend = async () => {
+        setDataRecomment(null)
+        let res = await handleFetchProductPaginate(1, 10, `-createdAt`)
+        if (res && res.data) {
+            setDataRecomment(res.data?.listProduct)
+
+        }
+    }
+
+    useEffect(() => {
+        fetchListProdRecommend()
+        fetchFindOneProdById()
+        document.title = location.state?.prod?.mainText
         handleFindCommentForProd(1, 15, "-createdAt")
-        window.scrollTo({ top: 0 });
-        sliderImage.current.addEventListener("scroll", handleMouseDown)
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        sliderImage?.current?.addEventListener("scroll", handleMouseDown)
 
         return () => sliderImage?.current?.removeEventListener("scroll", handleMouseDown)
     }, [location.state?.prod?._id])
@@ -273,11 +296,11 @@ const DetailProd = () => {
                                 }}
                             >
                                 <Breadcrumb.Item>SÁCH TIẾNG VIỆT</Breadcrumb.Item>
-                                <Breadcrumb.Item>{location?.state?.prod?.category}</Breadcrumb.Item>
+                                <Breadcrumb.Item>{dataProd?.category}</Breadcrumb.Item>
 
                             </Breadcrumb>
                         </Col>
-                        <Col span={24} className="detail-page-content">
+                        {dataProd ? <Col span={24} className="detail-page-content">
                             <Row >
                                 <Col xs={24} sm={24} md={24} lg={10} xl={10} xxl={10} className="content-left">
                                     <Row >
@@ -328,7 +351,7 @@ const DetailProd = () => {
                                 <Col xs={24} sm={24} md={24} lg={13} xl={13} xxl={13} className="content-right">
                                     <Row gutter={[0, 10]}>
                                         <Col span={24} className="title-prod">
-                                            {location.state?.prod?.mainText}
+                                            {dataProd?.mainText}
                                         </Col>
                                         <Col style={{ marginTop: 15 }} span={24} className="sub-title-prod">
                                             <Row>
@@ -337,7 +360,7 @@ const DetailProd = () => {
                                             </Row>
                                             <Row>
                                                 <span style={{ color: '#333333', fontSize: 14 }}>Tác giả : </span>
-                                                <span style={{ marginLeft: 5, fontWeight: 600 }}>{location.state?.prod?.author}</span>
+                                                <span style={{ marginLeft: 5, fontWeight: 600 }}>{dataProd?.author}</span>
                                             </Row>
                                         </Col>
 
@@ -358,12 +381,12 @@ const DetailProd = () => {
                                         <Col className="price-prod" span={24} style={{ display: 'flex', alignItems: 'center', marginTop: 5 }}>
                                             <span className="main-price">{formatter.format(priceItem)} đ</span>
                                             <span className="sub-price">{formatter.format(location.state?.isFlashsale ?
-                                                location.state?.prod?.price :
-                                                priceItem + (priceItem / 100 * location.state?.prod?.percentSale))} đ</span>
+                                                dataProd?.price :
+                                                priceItem + (priceItem / 100 * dataProd?.percentSale))} đ</span>
                                             <div className="percent-price">
-                                                {location.state?.prod?.priceFlashSale && location.state?.isFlashsale
-                                                    ? `-${formatter.format(Math.round(100 - (location.state?.prod?.priceFlashSale / location.state?.prod?.price) * 100))}%`
-                                                    : `-${location.state?.prod?.percentSale}%`}
+                                                {dataProd?.priceFlashSale && location.state?.isFlashsale
+                                                    ? `-${formatter.format(Math.round(100 - (dataProd?.priceFlashSale / dataProd?.price) * 100))}%`
+                                                    : `-${dataProd?.percentSale}%`}
 
                                             </div>
                                         </Col>
@@ -400,7 +423,20 @@ const DetailProd = () => {
                                     </Row>
                                 </Col>
                             </Row>
-                        </Col>
+                        </Col> :
+                            <Col span={24} style={{ padding: '20px', minHeight: 450, backgroundColor: '#fff', borderRadius: 4 }}>
+                                <Row gutter={[0, 20]}>
+                                    <Col span={24}>
+                                        <Skeleton active />
+                                    </Col>
+                                    <Col span={24}>
+                                        <Skeleton active />
+                                    </Col>
+                                    <Col span={24}>
+                                        <Skeleton active />
+                                    </Col>
+                                </Row>
+                            </Col>}
                         <Col style={{
                             position: 'fixed', left: 0, bottom: 0, width: '100%', height: 50,
                             backgroundColor: '#fff', zIndex: 10, borderTop: '1px solid #ededed'
@@ -518,46 +554,141 @@ const DetailProd = () => {
 
 
                     <Row ref={sliderItems} style={{ marginTop: 10 }} gutter={10} className='card-slider-flashsale'>
-                        {location.state?.items && location.state?.items?.length > 0 ?
-                            location.state?.items.map((item, index) => {
-                                return (
-                                    <Col onClick={() => handleNavigateDetailPage(item)} ref={firstCardSlider} key={index} className='card'>
-                                        <Card
-                                            hoverable
-                                            bordered={false}
-                                            draggable={false}
+                        {dataRecomment ? dataRecomment.map((item, index) => {
+                            return (
+                                <Col onClick={() => handleNavigateDetailPage(item)} ref={firstCardSlider} key={index} className='card'>
+                                    <Card
+                                        hoverable
+                                        bordered={false}
+                                        draggable={false}
 
-                                            style={{
-                                                width: '100%',
+                                        style={{
+                                            width: '100%',
 
-                                            }}
-                                            cover={<img draggable={false} alt="example" src={`${baseURL}/images/${item?.thumbnail}`} />}
-                                        >
-                                            <Row className='content-card'>
-                                                <Col span={24} className='title-card'>
-                                                    {item?.mainText}
+                                        }}
+                                        cover={<img draggable={false} alt="example" src={`${baseURL}/images/${item?.thumbnail}`} />}
+                                    >
+                                        <Row className='content-card'>
+                                            <Col span={24} className='title-card'>
+                                                {item?.mainText}
 
-                                                </Col>
-                                                <Col span={24} className='price-card price-shopping'>
-                                                    {formatter.format(item?.price)} đ
+                                            </Col>
+                                            <Col span={24} className='price-card price-shopping'>
+                                                {formatter.format(item?.price)} đ
 
-                                                </Col>
-                                                <Col span={24} className='old-price-card '>
-                                                    {formatter.format(item?.price + (item?.price * item?.percentSale / 100))}
+                                            </Col>
+                                            <Col span={24} className='old-price-card '>
+                                                {formatter.format(item?.price + (item?.price * item?.percentSale / 100))}
 
-                                                </Col>
-                                                <Col span={24} className='rate-card'>
-                                                    <Rate value={5} style={{ fontSize: 13 }} />
-                                                    <span className='number-comment'>(4)</span>
-                                                </Col>
-                                                <Col span={24} className='sold-card sold-shopping'>
-                                                    Đã bán {item?.sold}
-                                                </Col>
-                                            </Row>
-                                        </Card>
-                                    </Col>
-                                )
-                            }) : <></>}
+                                            </Col>
+                                            <Col span={24} className='rate-card'>
+                                                <Rate value={5} style={{ fontSize: 13 }} />
+                                                <span className='number-comment'>({item?.comments?.length})</span>
+                                            </Col>
+                                            <Col span={24} className='sold-card sold-shopping'>
+                                                Đã bán {item?.sold}
+                                            </Col>
+                                        </Row>
+                                    </Card>
+                                </Col>
+                            )
+                        }) :
+                            <>
+                                <Col className='card'>
+                                    <Card
+                                        hoverable
+                                        bordered={false}
+                                        draggable={false}
+
+                                        style={{
+                                            width: '100%',
+                                            height: '100%'
+
+                                        }}
+
+                                    >
+                                        <Row gutter={[0, 10]}>
+                                            <Skeleton style={{ height: '100%' }} active />
+                                            <Skeleton style={{ height: '100%' }} active />
+                                        </Row>
+                                    </Card>
+                                </Col>
+                                <Col className='card'>
+                                    <Card
+                                        hoverable
+                                        bordered={false}
+                                        draggable={false}
+
+                                        style={{
+                                            width: '100%',
+                                            height: '100%'
+                                        }}
+
+                                    >
+                                        <Row gutter={[0, 10]}>
+                                            <Skeleton style={{ height: '100%' }} active />
+                                            <Skeleton style={{ height: '100%' }} active />
+                                        </Row>
+                                    </Card>
+                                </Col>
+                                <Col className='card'>
+                                    <Card
+                                        hoverable
+                                        bordered={false}
+                                        draggable={false}
+
+                                        style={{
+                                            width: '100%',
+                                            height: '100%'
+                                        }}
+
+                                    >
+                                        <Row gutter={[0, 10]}>
+                                            <Skeleton style={{ height: '100%' }} active />
+                                            <Skeleton style={{ height: '100%' }} active />
+                                        </Row>
+                                    </Card>
+                                </Col>
+                                <Col className='card'>
+                                    <Card
+                                        hoverable
+                                        bordered={false}
+                                        draggable={false}
+
+                                        style={{
+                                            width: '100%',
+                                            height: '100%'
+                                        }}
+
+                                    >
+                                        <Row gutter={[0, 10]}>
+                                            <Skeleton style={{ height: '100%' }} active />
+                                            <Skeleton style={{ height: '100%' }} active />
+                                        </Row>
+                                    </Card>
+                                </Col>
+                                <Col className='card'>
+                                    <Card
+                                        hoverable
+                                        bordered={false}
+                                        draggable={false}
+
+                                        style={{
+                                            width: '100%',
+                                            height: '100%'
+                                        }}
+
+                                    >
+                                        <Row gutter={[0, 10]}>
+                                            <Skeleton style={{ height: '100%' }} active />
+                                            <Skeleton style={{ height: '100%' }} active />
+                                        </Row>
+                                    </Card>
+                                </Col>
+
+
+
+                            </>}
 
 
                     </Row>

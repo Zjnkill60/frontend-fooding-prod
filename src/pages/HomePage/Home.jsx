@@ -178,13 +178,14 @@ const Home = () => {
         let nameQuery = slug(prod?.mainText)
         if (type == "flashsale") {
 
-            navigate(`/product/${nameQuery}?id=${prod?._id}`, { state: { prod, isFlashsale: true, items: dataItemTrend } })
+            navigate(`/product/${nameQuery}?id=${prod?._id}`, { state: { prod, isFlashsale: true } })
         } else {
-            navigate(`/product/${nameQuery}?id=${prod?._id}`, { state: { prod, isFlashsale: false, items: dataItemTrend } })
+            navigate(`/product/${nameQuery}?id=${prod?._id}`, { state: { prod, isFlashsale: false } })
         }
     }
 
     useEffect(() => {
+        document.title = "Nhà sách trực tuyến | FAHASA.COM"
         let timeIntever = setInterval(() => {
             handleMoveRightBanner()
         }, 5000);
@@ -341,7 +342,7 @@ const Home = () => {
 
                                             <Col span={24} className='rate-card'>
                                                 <Rate value={5} style={{ fontSize: 13 }} />
-                                                <span className='number-comment'>(4)</span>
+                                                <span className='number-comment'>({item?.comments?.length})</span>
                                             </Col>
 
                                             <Col span={24} className='sold-card'>
@@ -606,7 +607,7 @@ const Home = () => {
 
                                             <Col span={24} className='rate-card'>
                                                 <Rate value={5} style={{ fontSize: 13 }} />
-                                                <span className='number-comment'>(4)</span>
+                                                <span className='number-comment'>({item?.comments.length})</span>
                                             </Col>
 
                                             <Col span={24} className='sold-card sold-shopping'>

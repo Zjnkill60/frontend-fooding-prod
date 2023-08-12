@@ -150,6 +150,7 @@ const Checkout = () => {
         let stringCodeRandom = generateRandomCodeOrder()
         setFormBanking(formBanking => [...formBanking, stringCodeRandom])
         fetchDataAccountUser()
+        window.scrollTo({ top: 0 })
     }, [])
 
 

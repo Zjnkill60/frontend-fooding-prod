@@ -212,7 +212,7 @@ const Header = () => {
                 {dataCart?.items?.length > 0 ? dataCart.items.map((item, index) => {
                     return (
                         <>
-                            <Col span={24} style={{ marginTop: 10 }}>
+                            <Col onClick={() => handleNavigateDetailPage(item)} span={24} style={{ marginTop: 10, cursor: 'pointer' }}>
 
                                 <Row >
                                     <Col span={5}>
