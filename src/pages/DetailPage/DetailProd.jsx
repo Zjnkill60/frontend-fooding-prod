@@ -241,6 +241,7 @@ const DetailProd = () => {
             }
 
             setDataProd(res?.data?.product)
+            setIndexImageSlider(0)
             setPriceItem(res?.data?.product?.priceFlashSale && location.state?.isFlashsale == true ?
                 res?.data?.product?.priceFlashSale : res?.data?.product?.price)
             setListImg(res?.data?.product?.slider)
@@ -263,10 +264,17 @@ const DetailProd = () => {
         document.title = location.state?.prod?.mainText
         handleFindCommentForProd(1, 15, "-createdAt")
         window.scrollTo({ top: 0, behavior: 'smooth' });
+
+
+
+
+    }, [location.state?.prod?._id])
+
+    useEffect(() => {
         sliderImage?.current?.addEventListener("scroll", handleMouseDown)
 
         return () => sliderImage?.current?.removeEventListener("scroll", handleMouseDown)
-    }, [location.state?.prod?._id])
+    }, [dataProd])
 
 
     console.log('re render')
