@@ -9,7 +9,6 @@ import { useDispatch, useSelector } from "react-redux"
 import { handleFilterNameProduct, handleLoginGoogle, handleLogout } from "../../service/api"
 import { handleDispatchLogin, handleDispatchLogout } from "../../redux/account/accountSlice"
 import DrawerMenuMoblie from "./DrawerMenuMoblie"
-
 const baseURL = import.meta.env.VITE_URL_BACKEND
 
 const Header = () => {
@@ -307,8 +306,9 @@ const Header = () => {
                 <Col span={24}>
                     <Row style={{ maxWidth: 1260, margin: '0 auto', padding: '5px 0', minHeight: 70, display: 'flex', alignItems: 'center' }}>
                         <Col style={{ cursor: 'pointer' }} onClick={() => navigate('/')} ref={headerLogo} className="logo-header-padding-sm" xs={24} sm={24} md={24} lg={6} xl={6} xxl={6} >
-                            <img className="hide-sm" src="https://cdn0.fahasa.com/skin/frontend/ma_vanese/fahasa/images/logo/fahasa_logo.png" />
-                            <img className="pc-hide" style={{ maxWidth: 130, maxHeight: 30 }} src="https://cdn0.fahasa.com/skin/frontend/ma_vanese/fahasa/images/fahasa-logo.png" alt="FAHASA.COM"></img>
+                            <img className="hide-sm" src={"./366234224_2528201954012003_6572641911100881814_n.png"} style={{ height: '50px', width: '80%', objectFit: 'cover' }} />
+                            <img className="pc-hide" style={{ maxWidth: 130, maxHeight: 30 }} src={"./366234224_2528201954012003_6572641911100881814_n.png"} alt="FAHASA.COM"></img>
+
                         </Col>
 
                         <Col ref={headerContent} xs={24} sm={24} md={24} lg={18} xl={18} xxl={18} >

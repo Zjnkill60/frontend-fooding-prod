@@ -243,7 +243,7 @@ const Home = () => {
                             <div ref={carousel} className='carousel' >
 
 
-                                <img src='https://cdn0.fahasa.com/media/magentothem/banner7/NCCGoldT823_HuyHoang_BannerSlide_840x320.jpg' />
+                                <img src='https://cdn0.fahasa.com/media/magentothem/banner7/DinhTiT8_Slide_840x320.jpg' />
 
 
                                 <img src='https://cdn0.fahasa.com/media/magentothem/banner7/Fahasa_Sinhnhat_Co_Logo_Slide_840x320.jpg' />

@@ -47,10 +47,10 @@ const OrderIndex = () => {
         let res = await fetchAllDiscount(current, pageSize, category)
         console.log(res)
         if (res && res.data) {
-            let array = res.data?.listDiscount.filter(item => {
-                return item.category == "discount"
-            })
-            setListDiscount(array)
+
+            setListDiscount(res.data?.listDiscount)
+
+
         }
     }
 
@@ -99,7 +99,7 @@ const OrderIndex = () => {
     }
 
     useEffect(() => {
-        getListCodeDiscount(1, 2, "discount")
+        getListCodeDiscount(1, 2, "deals")
         document.title = "Giỏ hàng - FAHASA.COM"
     }, [])
     return (
