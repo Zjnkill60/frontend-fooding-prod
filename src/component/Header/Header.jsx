@@ -307,7 +307,7 @@ const Header = () => {
                     <Row style={{ maxWidth: 1260, margin: '0 auto', padding: '5px 0', minHeight: 70, display: 'flex', alignItems: 'center' }}>
                         <Col style={{ cursor: 'pointer' }} onClick={() => navigate('/')} ref={headerLogo} className="logo-header-padding-sm" xs={24} sm={24} md={24} lg={6} xl={6} xxl={6} >
                             <img className="hide-sm" src={"./366234224_2528201954012003_6572641911100881814_n.png"} style={{ height: '50px', width: '80%', objectFit: 'cover' }} />
-                            <img className="pc-hide" style={{ width: 200, maxHeight: 35, objectFit: 'cover' }} src={"./logoMoblie.png"} alt="FAHASA.COM"></img>
+                            <img className="pc-hide" style={{ width: 130, maxHeight: 30, objectFit: 'cover' }} src={"./logoUpperCase.png"} alt="FAHASA.COM"></img>
 
                         </Col>
 
