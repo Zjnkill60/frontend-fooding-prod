@@ -4,6 +4,7 @@ import { RightOutlined, LeftOutlined, StarOutlined } from '@ant-design/icons'
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from "react-router-dom";
 import { fetchInfoFlashsale, handleFetchProductPaginate } from '../../service/api';
+import { getHour, getInitTimeFuture, getMinute, getSecond } from '../../utilities/getTime';
 const baseURL = import.meta.env.VITE_URL_BACKEND
 
 const Home = () => {
@@ -23,11 +24,12 @@ const Home = () => {
     const [second, setSecond] = useState(0)
     const [minute, setMinute] = useState(30)
     const [hour, setHours] = useState(0)
+    const [isTimeEnd, setIsTimeEnd] = useState(false)
 
     //data item flashsale
     const [dataItemFlashSale, setDataItemFlashSale] = useState([])
     const [dataItemTrend, setDataItemTrend] = useState([])
-    const [isTimeEnd, setIsTimeEnd] = useState(false)
+
 
     const formatter = new Intl.NumberFormat({
         style: 'currency',
@@ -91,70 +93,6 @@ const Home = () => {
     }
 
 
-    const getSecond = (timeCurrent, timeDb) => {
-        let secondRemain = timeDb.getSeconds() - timeCurrent.getSeconds()
-        if (secondRemain < 0) {
-            secondRemain += 60
-        }
-        setSecond(secondRemain)
-
-    }
-
-    const getMinute = (timeCurrent, timeDb) => {
-        let minuteRemain = timeDb.getMinutes() - timeCurrent.getMinutes()
-        if (minuteRemain < 0) {
-            minuteRemain += 60
-        }
-        setMinute(minuteRemain)
-
-    }
-
-    const getHour = (timeCurrent, timeDb) => {
-        let hourRemain = 0;
-        if ((timeDb.getHours() * 3600 + timeDb.getMinutes() * 60) - (timeCurrent.getHours() * 3600 + timeCurrent.getMinutes() * 60) >=
-            ((timeDb.getHours() - timeCurrent.getHours()) * 3600)) {
-            hourRemain = timeDb.getHours() - timeCurrent.getHours()
-        } else {
-            hourRemain = timeDb.getHours() - timeCurrent.getHours() - 1
-        }
-
-
-        if (hourRemain != hour) {
-            setHours(hourRemain <= 0 ? 0 : hourRemain)
-        }
-
-    }
-
-    const getInitTimeFuture = async () => {
-        let res = await fetchInfoFlashsale()
-        if (res && res.data) {
-            console.log(res)
-            setDataItemFlashSale(res.data?.modelFlashsale[0]?.itemFlashSale)
-            let dateFuture = new Date(res.data?.modelFlashsale[0]?.timer)
-
-            let dateNow = new Date()
-
-
-            if ((dateFuture.getDate() * 86400 + dateFuture.getHours() * 3600 + dateFuture.getMinutes() * 60) <
-                (dateNow.getDate() * 86400 + dateNow.getHours() * 3600 + dateNow.getMinutes() * 60)) {
-                setSecond(0)
-                setMinute(0)
-                setHours(0)
-                setIsTimeEnd(true)
-                return
-            }
-
-            setTimeFuture(dateFuture)
-
-            getSecond(dateNow, dateFuture)
-            getMinute(dateNow, dateFuture)
-            getHour(dateNow, dateFuture)
-
-        }
-    }
-
-    //convert slug
-
 
     const slug = function (str) {
         str = str.replace(/^\s+|\s+$/g, ''); // trim
@@ -197,7 +135,7 @@ const Home = () => {
     }, [])
 
     useEffect(() => {
-        getInitTimeFuture()
+        getInitTimeFuture(setSecond, setMinute, setHours, setTimeFuture, setDataItemFlashSale, setIsTimeEnd)
         changeActiveTrendShopping(indexActiveTabs)
     }, [])
 
@@ -212,9 +150,9 @@ const Home = () => {
         let timeID = setTimeout(() => {
             console.log(1)
             if (timeFuture) {
-                getSecond(new Date(), timeFuture)
-                getMinute(new Date(), timeFuture)
-                getHour(new Date(), timeFuture)
+                getSecond(new Date(), timeFuture, setSecond)
+                getMinute(new Date(), timeFuture, setMinute)
+                getHour(new Date(), timeFuture, setHours)
             } else {
 
                 return

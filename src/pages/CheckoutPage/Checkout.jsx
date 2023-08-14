@@ -53,7 +53,8 @@ const Checkout = () => {
             }
         })
         setIsLoading(true)
-        let res = await handleCreateOrder(name, email, phoneNumber, address, totalPrice, "Chờ xác nhận", undefined, item, payments, `#${formBanking[3]}`)
+
+        let res = await handleCreateOrder(name, email, phoneNumber, address, totalPrice, "Chờ xác nhận", undefined, item, payments, `#${formBanking[3]}`, dataAccount?.info?._id)
 
         setIsLoading(false)
         console.log(res)
@@ -154,7 +155,8 @@ const Checkout = () => {
     }, [])
 
 
-    console.log('dataAccount:', dataAccount)
+
+
     return (
         <Row style={{ minHeight: '60vh', backgroundColor: '#ededed' }}>
             <ModalUpdateListAddress fetchDataAccountUser={fetchDataAccountUser} isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} />

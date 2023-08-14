@@ -179,7 +179,13 @@ export const handleFindAllShipper = async () => {
 
 }
 
-export const handleCreateOrder = async (name, email, phoneNumber, address, totalPrice, status, shipper, item, payments, orderCode) => {
+export const handleCreateOrder = async (name, email, phoneNumber, address, totalPrice, status, shipper, item, payments, orderCode, idPerson) => {
+    console.log("idPerson : ", idPerson)
+    if (idPerson) {
+
+        return await axios.post('orders', { name, email, phoneNumber, address, totalPrice, status, shipper, item, payments, orderCode, idPerson })
+
+    }
     return await axios.post('orders', { name, email, phoneNumber, address, totalPrice, status, shipper, item, payments, orderCode })
 }
 

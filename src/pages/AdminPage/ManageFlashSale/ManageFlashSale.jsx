@@ -53,7 +53,7 @@ const columns = [
 const ManageFlashSale = () => {
     const [form] = useForm()
     const [dataTable, setDataTable] = useState([])
-    const [dataFlashsale, setDataFlashsale] = useState({})
+    const [IDdataFlashsale, setIDDataFlashsale] = useState({})
     const [isModalCreateOpen, setIsModalCreatelOpen] = useState(false)
     const [isModalUpdateOpen, setIsModalUpdatelOpen] = useState(false)
     const [isModalTimerOpen, setIsModalTimerOpen] = useState(false)
@@ -67,6 +67,7 @@ const ManageFlashSale = () => {
     });
 
     const showModalUpdateFlashsale = (item) => {
+        console.log(IDdataFlashsale)
         setIsModalUpdatelOpen(true)
         setDataClick(item)
     }
@@ -77,6 +78,7 @@ const ManageFlashSale = () => {
         let res = await fetchInfoFlashsale()
         console.log(res)
         if (res && res.data) {
+            setIDDataFlashsale(res.data.modelFlashsale[0]._id)
             let dateFuture = new Date(res.data?.modelFlashsale[0]?.timer)
             let dateNow = new Date()
             console.log('dateFuture : ', dateFuture.getHours())
@@ -88,11 +90,11 @@ const ManageFlashSale = () => {
 
             }
 
-            setDataFlashsale(res.data.modelFlashsale[0])
-            let data = res.data?.modelFlashsale[0]?.itemFlashSale?.map((item, index) => {
 
+            let data = res.data?.modelFlashsale[0]?.itemFlashSale?.map((item, index) => {
                 return {
                     key: index + 1,
+                    _id: item?._id,
                     mainText: item.mainText,
                     price: formatter.format(item.priceFlashSale),
                     priceCurrent: formatter.format(item.price),
@@ -134,10 +136,14 @@ const ManageFlashSale = () => {
 
 
     const confirmDeleteProduct = async (item) => {
-        let res = await handleRemoveItemFlashSale(dataFlashsale?._id, item._id)
-        if (res && res.data) {
-            message.success("Xoá thành công")
-            fetchInfoFlashSale()
+        let dataFlashsale = await fetchInfoFlashsale()
+
+        if (dataFlashsale && dataFlashsale.data) {
+            let res = await handleRemoveItemFlashSale(dataFlashsale?.data?.modelFlashsale[0]?._id, item?._id)
+            if (res && res.data) {
+                message.success("Xoá thành công")
+                fetchInfoFlashSale()
+            }
         }
     }
 
@@ -166,8 +172,6 @@ const ManageFlashSale = () => {
     useEffect(() => {
         fetchInfoFlashSale()
     }, [])
-
-
 
 
 
@@ -200,8 +204,8 @@ const ManageFlashSale = () => {
                     </Row>
                 </Form>
             </Modal>
-            <ModalUpdateItemFlashSale dataFlashsale={dataFlashsale} isModalOpen={isModalUpdateOpen} setIsModalOpen={setIsModalUpdatelOpen} dataClick={dataClick} fetchInfoFlashSale={fetchInfoFlashSale} />
-            <ModalCreateItemFlashSale dataFlashsale={dataFlashsale} isModalOpen={isModalCreateOpen} setIsModalOpen={setIsModalCreatelOpen} fetchInfoFlashSale={fetchInfoFlashSale} />
+            <ModalUpdateItemFlashSale dataFlashsale={IDdataFlashsale} isModalOpen={isModalUpdateOpen} setIsModalOpen={setIsModalUpdatelOpen} dataClick={dataClick} fetchInfoFlashSale={fetchInfoFlashSale} />
+            <ModalCreateItemFlashSale dataFlashsale={IDdataFlashsale} isModalOpen={isModalCreateOpen} setIsModalOpen={setIsModalCreatelOpen} fetchInfoFlashSale={fetchInfoFlashSale} />
             <Breadcrumb
                 style={{
                     margin: '16px 0',

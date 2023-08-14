@@ -1,9 +1,7 @@
 import { Modal, Form, Input, Row, Col, Select, message, Space } from 'antd';
 import { useForm } from 'antd/es/form/Form';
 import { useEffect, useState } from 'react';
-import { PlusCircleOutlined, MinusCircleOutlined } from '@ant-design/icons';
 import { handleFetchAllProd, handleUpdatePropFlashSale } from '../../service/api';
-import * as uuid from 'uuid'
 
 
 const ModalUpdateItemFlashSale = (props) => {

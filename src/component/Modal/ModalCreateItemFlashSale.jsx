@@ -26,8 +26,7 @@ const ModalCreateItemFlashSale = (props) => {
 
     const onFinish = async (values) => {
 
-        console.log(values, dataFlashsale._id)
-        let res = await handleCreateNewItemFlashSale(dataFlashsale._id, values.select, values.price, values.quantity)
+        let res = await handleCreateNewItemFlashSale(dataFlashsale, values.select, values.price, values.quantity)
         console.log(res)
         if (res && res.data) {
             message.success("Thêm sản phẩm vào flashsale thành công !")
