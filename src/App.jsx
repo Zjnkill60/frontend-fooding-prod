@@ -12,7 +12,7 @@ import Home from "./pages/HomePage/Home";
 import AuthPage from "./pages/AuthPage/AuthPage";
 import { handleFetchAccount } from "./service/api";
 import { useDispatch, useSelector } from "react-redux";
-import { handleDispatchLogin } from "./redux/account/accountSlice";
+import { handleDispatchLogin, handleDispatchLogout } from "./redux/account/accountSlice";
 import Account from "./pages/AccountPage/Account";
 import LayoutAdmin from "./pages/AdminPage/LayoutAdmin";
 import DashBoard from "./pages/AdminPage/Dashboard";
@@ -29,7 +29,7 @@ import OrderIndex from "./pages/OrderPage/OrderIndex";
 import ManageCodeSeller from "./pages/AdminPage/ManageCodeSeller/ManageCodeSeller";
 import Checkout from "./pages/CheckoutPage/Checkout";
 import History from "./pages/HistoryPage/History";
-import { Col, Row } from "antd";
+import { Col, message, Row } from "antd";
 import SiderAccount from "./pages/AccountPage/SiderAccount";
 import ListAddress from "./pages/AccountPage/ListAddress";
 
@@ -99,6 +99,9 @@ function App() {
     let res = await handleFetchAccount()
     if (res && res.data) {
       distpach(handleDispatchLogin(res.data?.user))
+    } else {
+      distpach(handleDispatchLogout())
+      message.error("Vui lòng đăng nhập lại !")
     }
 
   }

@@ -35,6 +35,7 @@ instance.interceptors.response.use(function (response) {
         if (res && res.data) {
             error.config.headers['Authorization'] = `Bearer ${res.data.access_token}`
             localStorage.setItem('access_token', res.data.access_token)
+
             return axios.request(error.config)
         }
     }
