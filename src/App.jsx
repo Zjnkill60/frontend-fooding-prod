@@ -97,7 +97,9 @@ function App() {
       return
     }
     let res = await handleFetchAccount()
-    distpach(handleDispatchLogin(res.data?.user))
+    if (res && res.data) {
+      distpach(handleDispatchLogin(res.data?.user))
+    }
 
   }
 
