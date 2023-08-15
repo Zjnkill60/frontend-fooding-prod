@@ -28,7 +28,7 @@ const ModalUpdateItemFlashSale = (props) => {
 
 
         let idItem = values?.select?.value ? values?.select?.value : values?.select
-        let res = await handleUpdatePropFlashSale(idItem, values.price, values.quantity)
+        let res = await handleUpdatePropFlashSale(idItem, values.price, values.quantity, values.soldFlashsale)
         if (res && res.data) {
             message.success("Thêm sản phẩm vào flashsale thành công !")
             setIsModalOpen(false)
@@ -84,7 +84,7 @@ const ModalUpdateItemFlashSale = (props) => {
 
 
                     <Row gutter={20} style={{ marginTop: 10 }}>
-                        <Col span={16}>
+                        <Col span={12}>
                             <Form.Item
                                 label="Sản phẩm"
                                 labelCol={{ span: 24 }}
@@ -128,6 +128,23 @@ const ModalUpdateItemFlashSale = (props) => {
                                 label="Số lượng "
                                 labelCol={{ span: 24 }}
                                 name="quantity"
+                                rules={[
+                                    {
+                                        required: true,
+                                        message: 'Chưa nhập',
+                                    },
+                                ]}
+                            >
+                                <Input type='number' style={{ textAlign: 'center' }} />
+                            </Form.Item>
+
+
+                        </Col>
+                        <Col span={4} >
+                            <Form.Item
+                                label="Đã bán"
+                                labelCol={{ span: 24 }}
+                                name="soldFlashsale"
                                 rules={[
                                     {
                                         required: true,

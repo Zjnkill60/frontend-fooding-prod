@@ -6,21 +6,21 @@ import { handleFindOneShipper } from "../../service/api";
 
 const columns = [
 
-    {
-        title: 'Tên',
-        dataIndex: 'name',
-        key: 'age',
-    },
+    // {
+    //     title: 'Tên',
+    //     dataIndex: 'name',
+    //     key: 'age',
+    // },
     {
         title: 'SĐT',
         dataIndex: 'phoneNumber',
         key: 'address',
     },
-    {
-        title: 'Email',
-        dataIndex: 'email',
-        key: 'item',
-    },
+    // {
+    //     title: 'Email',
+    //     dataIndex: 'email',
+    //     key: 'item',
+    // },
     {
         title: 'Địa chỉ',
         dataIndex: 'address',

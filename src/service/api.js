@@ -215,12 +215,12 @@ export const fetchInfoFlashsale = async () => {
     return await axios.get(`flashsale`)
 }
 
-export const handleUpdatePropFlashSale = async (idItem, priceSale, quantity) => {
-    return await axios.patch(`flashsale`, { idItem, priceSale, quantity })
+export const handleUpdatePropFlashSale = async (idItem, priceSale, quantity, soldFlashsale) => {
+    return await axios.patch(`flashsale`, { idItem, priceSale, quantity, soldFlashsale })
 }
 
-export const handleCreateNewItemFlashSale = async (id, idItem, priceSale, quantity) => {
-    return await axios.post(`flashsale/create/${id}`, { idItem, priceSale, quantity })
+export const handleCreateNewItemFlashSale = async (id, idItem, priceSale, quantity, soldFlashsale) => {
+    return await axios.post(`flashsale/create/${id}`, { idItem, priceSale, quantity, soldFlashsale })
 }
 
 export const handleRemoveItemFlashSale = async (id, idItem) => {

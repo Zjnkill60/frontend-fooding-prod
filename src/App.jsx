@@ -97,10 +97,8 @@ function App() {
       return
     }
     let res = await handleFetchAccount()
-    console.log(res)
-    if (res && res.data) {
-      distpach(handleDispatchLogin(res.data?.user))
-    }
+    distpach(handleDispatchLogin(res.data?.user))
+
   }
 
   const router = createBrowserRouter([

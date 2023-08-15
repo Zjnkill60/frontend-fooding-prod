@@ -250,14 +250,14 @@ const Home = () => {
 
                                         }}
                                         cover={<div style={{ position: 'relative' }} >
-                                            {isTimeEnd ? <div style={{
+                                            {isTimeEnd || item?.quantity <= 0 ? <div style={{
                                                 display: 'grid', placeItems: 'center',
                                                 backgroundColor: 'rgba(0,0,0,0.3)', position: 'absolute', width: '100%', height: '100%'
                                             }}>
                                                 <img className='img-time-out' style={{ objectFit: 'cover', width: '60%', height: 70 }}
                                                     src='https://cdn0.fahasa.com/skin/frontend/ma_vanese/fahasa/images/flashsale/Chay-hang-icon.svg' />
                                             </div> : <></>}
-                                            <img className='img-card' style={{ objectFit: 'cover' }} draggable={false} alt="example" src={`${baseURL}/images/${item?.thumbnail}`} />
+                                            <img className='img-card' style={{ objectFit: 'cover', width: '100%' }} draggable={false} alt="example" src={`${baseURL}/images/${item?.thumbnail}`} />
                                         </div>}
                                     >
                                         <Row className='content-card'>
@@ -535,11 +535,15 @@ const Home = () => {
 
                                             <Col span={24} className='price-card price-shopping'>
 
-                                                <span> {formatter.format(item?.price)}đ</span>
+                                                <span> {formatter.format(item?.priceFlashSale && item?.isFlashsale ?
+                                                    item?.priceFlashSale : item?.price)}đ</span>
 
                                             </Col>
                                             <Col span={24} className='old-price-card'>
-                                                {formatter.format(item?.price + (item?.price * item?.percentSale) / 100)}
+
+                                                {formatter.format(item?.isFlashsale ?
+                                                    item?.price :
+                                                    item?.price + (item?.price / 100 * item?.percentSale))}
 
                                             </Col>
 

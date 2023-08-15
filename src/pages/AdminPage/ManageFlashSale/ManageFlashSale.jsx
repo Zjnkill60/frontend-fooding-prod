@@ -34,7 +34,7 @@ const columns = [
 
     },
     {
-        title: 'Sold',
+        title: 'Đã bán',
         dataIndex: 'sold',
 
 
@@ -160,7 +160,7 @@ const ManageFlashSale = () => {
         let number = +today.getHours() + (+values.timer)
         today.setHours(number);
         today.setSeconds(0)
-        let res = await handleUpdateTimer(dataFlashsale?._id, today.toString())
+        let res = await handleUpdateTimer(IDdataFlashsale, today.toString())
         if (res && res.data) {
             message.success("Cập nhật thành công")
             setIsModalTimerOpen(false)

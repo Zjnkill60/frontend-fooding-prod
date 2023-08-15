@@ -40,7 +40,6 @@ const Checkout = () => {
     const dispatch = useDispatch()
 
     const onFinish = async (values) => {
-        console.log(values)
         const { name, phoneNumber, email, address } = values
         let payments = value == 1 ? 'cash' : 'banking'
         let item = dataCart.map(prod => {
@@ -54,7 +53,7 @@ const Checkout = () => {
         })
         setIsLoading(true)
 
-        let res = await handleCreateOrder(name, email, phoneNumber, address, totalPrice, "Chờ xác nhận", undefined, item, payments, `#${formBanking[3]}`, dataAccount?.info?._id)
+        let res = await handleCreateOrder(name, email, phoneNumber, address, totalPrice, "Chờ xác nhận", undefined, item, payments, `#${formBanking[3]}`)
 
         setIsLoading(false)
         console.log(res)
@@ -122,7 +121,7 @@ const Checkout = () => {
                     }
                 })
                 setIsLoading(true)
-                let res = await handleCreateOrder(name, email, phoneNumber, address, totalPrice, "Chờ xác nhận", undefined, item, payments, `#${formBanking[3]}`)
+                let res = await handleCreateOrder(name, email, phoneNumber, address, totalPrice, "Chờ xác nhận", undefined, item, payments, `#${formBanking[3]}`, dataAccount?.info?._id)
 
                 setIsLoading(false)
                 console.log(res)
@@ -166,7 +165,7 @@ const Checkout = () => {
                     <Result
                         status="success"
                         title="Đặt hàng thành công !"
-                        subTitle={`Mã đơn hàng : #${formBanking[3]} , Cảm ơn bạn đã đặt hàng tại Fahasa ,đơn hàng của bạn sẽ được xác nhận sau 1-5 phút.`}
+                        subTitle={`Mã đơn hàng : #${formBanking[3]} , Cảm ơn bạn đã đặt hàng tại SieuQuanFood ,đơn hàng của bạn sẽ được xác nhận sau 1-5 phút.`}
                         extra={dataAccount?.isAuthenticated ?
                             [
                                 <Button onClick={() => navigate('/')} type="primary" key="console">
@@ -272,7 +271,11 @@ const Checkout = () => {
                                                         },
                                                     ]}
                                                 >
+
                                                     <Input size='large' placeholder='Nhập email (zkm@gmail.com)' className='input-auth' />
+
+
+
                                                 </Form.Item>
 
                                                 <Form.Item

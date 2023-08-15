@@ -16,16 +16,16 @@ const columns = [
         dataIndex: 'orderCode',
         key: 'age',
     },
-    {
-        title: 'Số tiền',
-        dataIndex: 'totalPrice',
-        key: 'address',
-    },
-    {
-        title: 'Thời gian',
-        dataIndex: 'createdAt',
-        key: 'item',
-    },
+    // {
+    //     title: 'Số tiền',
+    //     dataIndex: 'totalPrice',
+    //     key: 'address',
+    // },
+    // {
+    //     title: 'Thời gian',
+    //     dataIndex: 'createdAt',
+    //     key: 'item',
+    // },
     {
         title: 'Trạng thái',
         dataIndex: 'status',

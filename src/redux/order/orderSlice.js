@@ -24,7 +24,12 @@ export const orderSlice = createSlice({
             state.items.forEach(item => {
                 if (item?.mainText == action.payload?.mainText) {
                     isRecur = true
-                    item.quantity = +item.quantity + action.payload?.quantity
+                    if (action.payload?.quantityFlashsale && action.payload?.quantityFlashsale <= item.quantity + action.payload?.quantity) {
+                        item.quantity = action.payload?.quantityFlashsale
+                    } else {
+                        item.quantity = +item.quantity + action.payload?.quantity
+                    }
+
                 }
             })
             if (!isRecur) {
@@ -33,7 +38,7 @@ export const orderSlice = createSlice({
             state.items.forEach(item => {
                 total += (item.quantity * item.price)
             })
-            state.totalPrice = total
+            state.totalPrice = total - state.codeDiscount?.discount
 
 
         },
@@ -68,7 +73,12 @@ export const orderSlice = createSlice({
 
             state.items.forEach(item => {
                 if (item.mainText == action.payload.mainText) {
-                    item.quantity += 1
+                    if (item.quantityFlashsale && item.quantityFlashsale <= item.quantity + 1) {
+                        item.quantity = item.quantityFlashsale
+                    } else {
+                        item.quantity += 1
+                    }
+
                 }
                 total += (item.quantity * item.price) - state.codeDiscount?.discount
             })
@@ -105,7 +115,12 @@ export const orderSlice = createSlice({
             let total = 0
             state.items.forEach(item => {
                 if (item.mainText == action.payload.mainText) {
-                    item.quantity = (+action.payload?.quantity)
+                    if (item.quantityFlashsale && item.quantityFlashsale <= action.payload?.quantity) {
+                        item.quantity = item.quantityFlashsale
+                    } else {
+                        item.quantity = (+action.payload?.quantity)
+                    }
+
                 }
                 total += (item.quantity * item.price)
             })

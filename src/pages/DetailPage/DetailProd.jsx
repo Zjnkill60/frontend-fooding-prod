@@ -8,6 +8,7 @@ import { fetchCommentByIdProduct, handleCreateNewComment, handleFetchProductPagi
 import moment from 'moment'
 import ModalPreviewImageComments from "./ModalPreviewImageComment";
 import { handleAddItemToCart } from "../../redux/order/orderSlice";
+import { getHour, getInitTimeFuture, getMinute, getSecond } from "../../utilities/getTime";
 
 const baseURL = import.meta.env.VITE_URL_BACKEND
 
@@ -24,6 +25,7 @@ const DetailProd = () => {
     const [indexActive, setIndexActive] = useState(0)
     const [indexImageSlider, setIndexImageSlider] = useState(0)
     const [listImg, setListImg] = useState([])
+    const [percentSold, setPercentSold] = useState(0)
     //rate comment
     const [rate, setRate] = useState(5)
     //get info account redux
@@ -198,17 +200,57 @@ const DetailProd = () => {
 
     const handlePlusValueQuantity = (type) => {
         if (type == "mobile") {
-            console.log(valueQuantityMobile.current.value)
+            if (dataProd?.isFlashsale && valueQuantityMobile.current.value >= dataProd?.quantity - dataProd?.soldFlashSale) {
+                valueQuantityMobile.current.value = dataProd.quantity - dataProd?.soldFlashSale
+                message.error(`Số lượng sản phẩm còn lại là ${dataProd.quantity - dataProd?.soldFlashSale}`)
+                return
+            }
             if (valueQuantityMobile.current.value >= 99) {
                 return
             }
             valueQuantityMobile.current.value = (+valueQuantityMobile.current.value) + 1
         } else {
+            if (dataProd?.isFlashsale && valueQuantityPc.current.value >= dataProd?.quantity - dataProd?.soldFlashSale) {
+                valueQuantityPc.current.value = dataProd.quantity - dataProd?.soldFlashSale
+                message.error(`Số lượng sản phẩm còn lại là ${dataProd.quantity - dataProd?.soldFlashSale}`)
+                return
+            }
             if (valueQuantityPc.current.value >= 99) {
                 return
             }
             valueQuantityPc.current.value = (+valueQuantityPc.current.value) + 1
         }
+    }
+
+    const handleChaneInputQuantity = () => {
+
+        if (valueQuantityPc.current.value <= 0) {
+            valueQuantityPc.current.value = 1
+        }
+
+        if (dataProd?.isFlashsale && valueQuantityPc.current.value >= dataProd?.quantity - dataProd?.soldFlashSale) {
+            valueQuantityPc.current.value = dataProd.quantity - dataProd?.soldFlashSale
+            message.error(`Số lượng sản phẩm còn lại là ${dataProd.quantity - dataProd?.soldFlashSale}`)
+            return
+        }
+        if (valueQuantityPc.current.value >= 99) {
+            return
+        }
+
+        if (valueQuantityMobile.current.value <= 0) {
+            valueQuantityMobile.current.value = 1
+        }
+
+        if (dataProd?.isFlashsale && valueQuantityMobile.current.value >= dataProd?.quantity - dataProd?.soldFlashSale) {
+            valueQuantityMobile.current.value = dataProd.quantity - dataProd?.soldFlashSale
+            message.error(`Số lượng sản phẩm còn lại là ${dataProd.quantity - dataProd?.soldFlashSale}`)
+            return
+        }
+        if (valueQuantityMobile.current.value >= 99) {
+            valueQuantityMobile.current.value = 99
+            return
+        }
+
     }
 
     const handleDispatchItemToCart = (type, action) => {
@@ -217,7 +259,8 @@ const DetailProd = () => {
             price: priceItem,
             thumbnail: thumbnail,
             quantity: type == "mobile" ? +valueQuantityMobile.current?.value : +valueQuantityPc.current?.value,
-            mainText: location.state?.prod?.mainText
+            mainText: location.state?.prod?.mainText,
+            quantityFlashsale: dataProd?.isFlashsale ? dataProd?.quantity - dataProd?.soldFlashSale : undefined
         }))
         message.success("Thêm sản phẩm vào giỏ hàng !")
 
@@ -240,9 +283,10 @@ const DetailProd = () => {
                 res.data?.product?.slider.unshift(res.data?.product?.thumbnail)
             }
 
+            setPercentSold(res?.data?.product?.isFlashsale ? (res?.data?.product?.soldFlashSale / res?.data?.product?.quantity) * 100 : 0)
             setDataProd(res?.data?.product)
             setIndexImageSlider(0)
-            setPriceItem(res?.data?.product?.priceFlashSale && location.state?.isFlashsale == true ?
+            setPriceItem(res?.data?.product?.priceFlashSale && res?.data?.product?.isFlashsale ?
                 res?.data?.product?.priceFlashSale : res?.data?.product?.price)
             setListImg(res?.data?.product?.slider)
             setThumbnail(res?.data?.product?.thumbnail)
@@ -258,15 +302,21 @@ const DetailProd = () => {
         }
     }
 
+    //timer
+    const [timeFuture, setTimeFuture] = useState(null)
+    const [second, setSecond] = useState(0)
+    const [minute, setMinute] = useState(30)
+    const [hour, setHours] = useState(0)
+    const [isTimeEnd, setIsTimeEnd] = useState(false)
+
     useEffect(() => {
+        getInitTimeFuture(setSecond, setMinute, setHours, setTimeFuture, null, setIsTimeEnd)
         fetchListProdRecommend()
         fetchFindOneProdById()
-        document.title = location.state?.prod?.mainText
         handleFindCommentForProd(1, 15, "-createdAt")
+
+        document.title = location.state?.prod?.mainText
         window.scrollTo({ top: 0, behavior: 'smooth' });
-
-
-
 
     }, [location.state?.prod?._id])
 
@@ -276,8 +326,31 @@ const DetailProd = () => {
         return () => sliderImage?.current?.removeEventListener("scroll", handleMouseDown)
     }, [dataProd])
 
+    useEffect(() => {
+        if (second <= 1 && minute == 0 && hour == 0) {
+            setSecond(0)
+            setIsTimeEnd(true)
+            console.log('het hang stop time out')
+            return
+        }
+        let timeID = setTimeout(() => {
 
-    console.log('re render')
+            if (timeFuture) {
+                getSecond(new Date(), timeFuture, setSecond)
+                getMinute(new Date(), timeFuture, setMinute)
+                getHour(new Date(), timeFuture, setHours)
+            } else {
+
+                return
+            }
+        }, 1000);
+        return () => clearTimeout(timeID)
+
+    }, [second])
+
+
+
+
     return (
         <div style={{ backgroundColor: '#ededed' }}>
             <ModalPreviewImageComments previewImageComment={previewImageComment} isModalOpen={isModalPreview} setIsModalOpen={setIsModalPreview} />
@@ -358,6 +431,54 @@ const DetailProd = () => {
                                 </Col>
                                 <Col xs={24} sm={24} md={24} lg={13} xl={13} xxl={13} className="content-right">
                                     <Row gutter={[0, 10]}>
+                                        {dataProd?.isFlashsale ?
+                                            <Col xs={24} sm={24} md={24} lg={0} xl={0} xxl={0} >
+                                                <Row style={{ backgroundColor: '#ff6d6d', padding: 5 }}>
+                                                    <Col span={24} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                                                        <div style={{ padding: 5, backgroundColor: '#fff', maxHeight: 20, borderRadius: '0 0 10px 0' }}>
+                                                            <img style={{ height: 15, width: 120, objectFit: 'cover' }} src="https://cdn0.fahasa.com/skin/frontend/ma_vanese/fahasa/images/flashsale/label-flashsale.svg?q=102450" />
+
+                                                        </div>
+                                                        <div style={{ height: 15, width: '150px', backgroundColor: '#ffcfce', position: 'relative', borderRadius: 10 }}>
+                                                            <div style={isTimeEnd ?
+                                                                { width: '100%', background: '#fff', height: '100%', borderRadius: 10 }
+                                                                :
+                                                                { width: `${percentSold}%`, height: '100%', borderRadius: 10, background: '#fff' }}>
+
+                                                            </div>
+                                                            <span style={{ position: 'absolute', right: '50%', transform: 'translateX(50%)', fontSize: 11, color: '#f63b2f', top: 0 }}>
+                                                                {isTimeEnd ? "Hết thời gian" : ` Còn lại: ${dataProd?.quantity - dataProd?.soldFlashSale}`}
+                                                            </span>
+                                                        </div>
+                                                    </Col>
+                                                    <Col span={24} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                                                        <div style={{ display: 'flex', alignItems: 'center', padding: '0 5px' }}>
+                                                            <span style={{ fontSize: 18, fontWeight: 700, color: '#fff' }} >{formatter.format(priceItem)} đ</span>
+                                                            <div style={{ fontSize: 12, padding: 3, color: '#c92127', backgroundColor: '#fff', fontWeight: 700, borderRadius: 3, margin: '0 10px' }} >
+                                                                {dataProd?.priceFlashSale && dataProd?.isFlashsale
+                                                                    ? `-${formatter.format(Math.round(100 - (dataProd?.priceFlashSale / dataProd?.price) * 100))}%`
+                                                                    : `-${dataProd?.percentSale}%`}
+
+                                                            </div>
+                                                            <span style={{ fontSize: 12, color: '#fff', textDecoration: 'line-through' }} >{formatter.format(dataProd?.isFlashsale ?
+                                                                dataProd?.price :
+                                                                priceItem + (priceItem / 100 * dataProd?.percentSale))} đ
+                                                            </span>
+
+                                                        </div>
+                                                        <div style={{ display: 'flex', alignItems: 'center', padding: 5, borderRadius: 7 }}>
+                                                            <span className='time-countdown-detail-prod'>{hour < 10 ? `0${hour}` : hour}</span>
+                                                            <span style={{ fontWeight: 700 }}>:</span>
+                                                            <span className='time-countdown-detail-prod'>{minute < 10 ? `0${minute}` : minute}</span>
+                                                            <span style={{ fontWeight: 700 }}>:</span>
+                                                            <span className='time-countdown-detail-prod'>{second < 10 ? `0${second}` : second}</span>
+                                                        </div>
+                                                    </Col>
+                                                </Row>
+                                            </Col>
+                                            :
+                                            <></>
+                                        }
                                         <Col span={24} className="title-prod">
                                             {dataProd?.mainText}
                                         </Col>
@@ -382,23 +503,78 @@ const DetailProd = () => {
                                                 <span style={{ marginLeft: 5, fontWeight: 600 }}>Bìa Mềm</span>
                                             </Row>
                                         </Col>
-                                        <Col span={24} style={{ display: 'flex', alignItems: 'center', marginTop: 10 }}>
+                                        <Col span={24} className="rate-prod" style={{ display: 'flex', alignItems: 'center', marginTop: 5 }}>
                                             <Rate value={5} style={{ color: 'f6a500', fontSize: 14 }} />
                                             <span style={{ marginLeft: 10, color: '#f6a500', marginTop: 1, fontWeight: 500 }}>({comments?.length} đánh giá)</span>
                                         </Col>
-                                        <Col className="price-prod" span={24} style={{ display: 'flex', alignItems: 'center', marginTop: 5 }}>
-                                            <span className="main-price">{formatter.format(priceItem)} đ</span>
-                                            <span className="sub-price">{formatter.format(location.state?.isFlashsale ?
-                                                dataProd?.price :
-                                                priceItem + (priceItem / 100 * dataProd?.percentSale))} đ</span>
-                                            <div className="percent-price">
-                                                {dataProd?.priceFlashSale && location.state?.isFlashsale
-                                                    ? `-${formatter.format(Math.round(100 - (dataProd?.priceFlashSale / dataProd?.price) * 100))}%`
-                                                    : `-${dataProd?.percentSale}%`}
+                                        {dataProd?.isFlashsale ?
 
-                                            </div>
-                                        </Col>
-                                        <Col span={24} style={{ marginTop: 15 }} >
+                                            <Col xs={0} sm={0} md={0} lg={24} xl={24} xxl={24} style={{ backgroundColor: '#ff6d6d', borderRadius: 8 }}>
+                                                <Row style={{ padding: 7, display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderRadius: 8 }}>
+                                                    <Col>
+                                                        <div style={{ display: 'flex', alignItems: 'center', backgroundColor: '#fff', padding: 5, borderRadius: 7 }}>
+                                                            <img style={{ height: 25, objectFit: 'cover' }} src="https://cdn0.fahasa.com/skin/frontend/ma_vanese/fahasa/images/flashsale/label-flashsale.svg?q=102450" />
+                                                            <span className='time-countdown-detail-prod' style={{ marginLeft: 20 }}>{hour < 10 ? `0${hour}` : hour}</span>
+                                                            <span style={{ fontWeight: 700 }}>:</span>
+                                                            <span className='time-countdown-detail-prod'>{minute < 10 ? `0${minute}` : minute}</span>
+                                                            <span style={{ fontWeight: 700 }}>:</span>
+                                                            <span className='time-countdown-detail-prod'>{second < 10 ? `0${second}` : second}</span>
+                                                        </div>
+                                                    </Col>
+                                                    <Col>
+                                                        <div style={{ height: 15, width: 200, backgroundColor: '#ffcfce', position: 'relative', borderRadius: 10 }}>
+                                                            <div style={isTimeEnd ?
+                                                                { width: '100%', background: '#fff', height: '100%', borderRadius: 10 }
+                                                                :
+                                                                { width: `${percentSold}%`, height: '100%', borderRadius: 10, background: '#fff' }}>
+
+                                                            </div>
+                                                            <span style={{ position: 'absolute', right: '50%', transform: 'translateX(50%)', fontSize: 12, color: '#f63b2f', top: 0 }}>
+                                                                {isTimeEnd ? "Hết thời gian" : ` Còn lại: ${dataProd?.quantity - dataProd?.soldFlashSale}`}
+                                                            </span>
+                                                        </div>
+                                                    </Col>
+                                                </Row>
+
+
+
+                                            </Col> :
+                                            <></>}
+
+
+                                        {!dataProd?.isFlashsale ?
+                                            <Col className="price-prod" style={{ display: 'flex', alignItems: 'center', marginTop: 5 }}>
+                                                <span className="main-price">{formatter.format(priceItem)} đ</span>
+                                                <span className="sub-price">{formatter.format(dataProd?.isFlashsale ?
+                                                    dataProd?.price :
+                                                    priceItem + (priceItem / 100 * dataProd?.percentSale))} đ</span>
+                                                <div className="percent-price">
+                                                    {dataProd?.priceFlashSale && dataProd?.isFlashsale
+                                                        ? `-${formatter.format(Math.round(100 - (dataProd?.priceFlashSale / dataProd?.price) * 100))}%`
+                                                        : `-${dataProd?.percentSale}%`}
+
+                                                </div>
+                                            </Col> :
+                                            <>
+                                                <Col xs={0} sm={0} md={0} lg={24} xl={24} xxl={24} className="price-prod hide-detail" style={{ display: 'flex', alignItems: 'center', marginTop: 5 }}>
+                                                    <span className="main-price">{formatter.format(priceItem)} đ</span>
+                                                    <span className="sub-price">{formatter.format(dataProd?.isFlashsale ?
+                                                        dataProd?.price :
+                                                        priceItem + (priceItem / 100 * dataProd?.percentSale))} đ</span>
+                                                    <div className="percent-price">
+                                                        {dataProd?.priceFlashSale && dataProd?.isFlashsale
+                                                            ? `-${formatter.format(Math.round(100 - (dataProd?.priceFlashSale / dataProd?.price) * 100))}%`
+                                                            : `-${dataProd?.percentSale}%`}
+
+                                                    </div>
+                                                </Col>
+                                            </>}
+
+
+
+
+
+                                        <Col className="rate-prod" span={24} style={{ margin: '5px 0' }} >
                                             <Row>
                                                 <span style={{ color: '#333333', fontSize: 14 }}> Thời gian giao hàng :</span>
                                                 <span style={{ marginLeft: 5, color: '#2489f4', fontWeight: 600 }}>10h-17h / ngày</span>
@@ -408,25 +584,44 @@ const DetailProd = () => {
                                                 <span style={{ marginLeft: 5, fontWeight: 600 }}>Toàn Quốc</span>
                                             </Row>
                                         </Col>
-                                        <Col className="hide-detail" span={24} style={{ display: 'flex', alignItems: 'center', position: 'absolute', bottom: '20%' }}>
+                                        <Col className="hide-detail" span={24} style={{ display: 'flex', alignItems: 'center', position: 'absolute', bottom: '15%' }}>
                                             <span style={{ fontSize: 16, color: '#555555', fontWeight: 600 }}>Số lượng : </span>
                                             <div style={{ padding: '10px 20px', border: '1px solid #333', height: 20, borderRadius: 5, marginLeft: 50 }}>
                                                 <MinusOutlined onClick={() => handleMinusValueQuantity("pc")} style={{ cursor: 'pointer' }} />
-                                                <input ref={valueQuantityPc} defaultValue={1}
+                                                <input onChange={(e) => handleChaneInputQuantity(e)} ref={valueQuantityPc} defaultValue={1}
                                                     style={{ width: 50, height: 20, border: 'none', outline: 'none', textAlign: 'center', fontWeight: 700, userSelect: 'none' }}
                                                     type="number" />
                                                 <PlusOutlined onClick={() => handlePlusValueQuantity("pc")} style={{ cursor: 'pointer' }} />
                                             </div>
                                         </Col>
-                                        <Col className="hide-detail" span={24} style={{ display: 'flex', position: 'absolute', bottom: 10 }}>
-                                            <Button onClick={() => handleDispatchItemToCart("pc", "add")} style={{ width: 200, height: 45, border: '2px solid #c92127', display: 'flex', alignItems: 'center' }}>
-                                                <ShoppingCartOutlined style={{ fontSize: 23, color: '#c92127', fontWeight: 700 }} />
-                                                <span style={{ color: '#c92127', fontWeight: 600, fontSize: 15 }} >  Thêm vào giỏ hàng</span>
+                                        <Col className="hide-detail" span={24} style={{ display: 'flex', position: 'absolute', bottom: 5 }}>
+                                            {dataProd?.isFlashsale ?
+                                                dataProd?.quantity - dataProd?.soldFlashSale > 0 && !isTimeEnd ?
+                                                    <>
+                                                        <Button onClick={() => handleDispatchItemToCart("pc", "add")} style={{ width: 200, height: 45, border: '2px solid #c92127', display: 'flex', alignItems: 'center' }}>
+                                                            <ShoppingCartOutlined style={{ fontSize: 23, color: '#c92127', fontWeight: 700 }} />
+                                                            <span style={{ color: '#c92127', fontWeight: 600, fontSize: 15 }} >  Thêm vào giỏ hàng</span>
 
-                                            </Button>
-                                            <Button onClick={() => handleDispatchItemToCart("pc", "buy")} style={{ width: 200, height: 45, backgroundColor: '#c92127', color: '#fff', fontWeight: 600, fontSize: 15, marginLeft: 15 }}>
-                                                Mua ngay
-                                            </Button>
+                                                        </Button>
+                                                        <Button onClick={() => handleDispatchItemToCart("pc", "buy")} style={{ width: 200, height: 45, backgroundColor: '#c92127', color: '#fff', fontWeight: 600, fontSize: 15, marginLeft: 15 }}>
+                                                            Mua ngay
+                                                        </Button>
+                                                    </> :
+                                                    <Button disabled style={{ width: 200, height: 45, fontWeight: 600, fontSize: 15 }}>
+                                                        Hiện tại hết hàng
+                                                    </Button>
+                                                :
+                                                <>
+                                                    <Button onClick={() => handleDispatchItemToCart("pc", "add")} style={{ width: 200, height: 45, border: '2px solid #c92127', display: 'flex', alignItems: 'center' }}>
+                                                        <ShoppingCartOutlined style={{ fontSize: 23, color: '#c92127', fontWeight: 700 }} />
+                                                        <span style={{ color: '#c92127', fontWeight: 600, fontSize: 15 }} >  Thêm vào giỏ hàng</span>
+
+                                                    </Button>
+                                                    <Button onClick={() => handleDispatchItemToCart("pc", "buy")} style={{ width: 200, height: 45, backgroundColor: '#c92127', color: '#fff', fontWeight: 600, fontSize: 15, marginLeft: 15 }}>
+                                                        Mua ngay
+                                                    </Button>
+
+                                                </>}
                                         </Col>
                                     </Row>
                                 </Col>
@@ -454,7 +649,7 @@ const DetailProd = () => {
                                 <Col span={8} style={{ display: 'flex', alignItems: 'center', borderRight: '1px solid #ededed' }}>
                                     <div style={{ padding: '10px 0px', height: 20, borderRadius: 5, margin: '0 auto' }}>
                                         <MinusOutlined onClick={() => handleMinusValueQuantity("mobile")} style={{ cursor: 'pointer', fontSize: 17 }} />
-                                        <input ref={valueQuantityMobile} defaultValue={1}
+                                        <input onChange={handleChaneInputQuantity} ref={valueQuantityMobile} defaultValue={1}
                                             style={{
                                                 width: 60, height: 20, border: 'none', outline: 'none', textAlign: 'center',
                                                 fontWeight: 700, backgroundColor: '#fff', color: '#c92127'
@@ -463,22 +658,51 @@ const DetailProd = () => {
                                         <PlusOutlined onClick={() => handlePlusValueQuantity("mobile")} style={{ cursor: 'pointer', fontSize: 17 }} />
                                     </div>
                                 </Col>
-                                <Col onClick={() => handleDispatchItemToCart("mobile", "add")} span={7} style={{
-                                    display: 'grid', placeItems: 'center', fontSize: 14,
-                                    padding: '0 15px', color: '#c92127', fontWeight: 600, textAlign: 'center'
-                                }}>
-                                    <Row style={{ textAlign: 'center' }}>
-                                        <Col span={24}>
-                                            <ShoppingCartOutlined style={{ fontSize: 23 }} />
+                                {dataProd?.isFlashsale ?
+                                    dataProd?.quantity - dataProd?.soldFlashSale > 0 && !isTimeEnd ?
+                                        <>
+                                            <Col onClick={() => handleDispatchItemToCart("mobile", "add")} span={7} style={{
+                                                display: 'grid', placeItems: 'center', fontSize: 14,
+                                                padding: '0 15px', color: '#c92127', fontWeight: 600, textAlign: 'center'
+                                            }}>
+                                                <Row style={{ textAlign: 'center' }}>
+                                                    <Col span={24}>
+                                                        <ShoppingCartOutlined style={{ fontSize: 23 }} />
+                                                    </Col>
+                                                    <Col span={24}>
+                                                        Thêm vào
+                                                    </Col>
+                                                </Row>
+                                            </Col>
+                                            <Col onClick={() => handleDispatchItemToCart("mobile", "buy")} span={9} style={{ backgroundColor: '#c92127', display: 'grid', placeItems: 'center', color: '#fff', fontWeight: 700 }}>
+                                                Mua ngay
+                                            </Col>
+                                        </>
+                                        :
+                                        <>
+                                            <Col disabled span={16} style={{ backgroundColor: '#ccc', display: 'grid', placeItems: 'center', color: '#555', fontWeight: 500 }}>
+                                                Hiện tại hết hàng
+                                            </Col>
+                                        </>
+                                    :
+                                    <>
+                                        <Col onClick={() => handleDispatchItemToCart("mobile", "add")} span={7} style={{
+                                            display: 'grid', placeItems: 'center', fontSize: 14,
+                                            padding: '0 15px', color: '#c92127', fontWeight: 600, textAlign: 'center'
+                                        }}>
+                                            <Row style={{ textAlign: 'center' }}>
+                                                <Col span={24}>
+                                                    <ShoppingCartOutlined style={{ fontSize: 23 }} />
+                                                </Col>
+                                                <Col span={24}>
+                                                    Thêm vào
+                                                </Col>
+                                            </Row>
                                         </Col>
-                                        <Col span={24}>
-                                            Thêm vào
+                                        <Col onClick={() => handleDispatchItemToCart("mobile", "buy")} span={9} style={{ backgroundColor: '#c92127', display: 'grid', placeItems: 'center', color: '#fff', fontWeight: 700 }}>
+                                            Mua ngay
                                         </Col>
-                                    </Row>
-                                </Col>
-                                <Col onClick={() => handleDispatchItemToCart("mobile", "buy")} span={9} style={{ backgroundColor: '#c92127', display: 'grid', placeItems: 'center', color: '#fff', fontWeight: 700 }}>
-                                    Mua ngay
-                                </Col>
+                                    </>}
                             </Row>
                         </Col>
 
@@ -487,7 +711,7 @@ const DetailProd = () => {
 
 
                 </Col>
-            </Row>
+            </Row >
             <Row className="detail-page-container code-seller-content" style={{
                 maxWidth: 1260, margin: '0 auto', marginTop: 20, backgroundColor: '#fff',
                 padding: 10, borderRadius: 5
@@ -824,7 +1048,7 @@ const DetailProd = () => {
 
             </Row>
 
-        </div>
+        </div >
     )
 }
 

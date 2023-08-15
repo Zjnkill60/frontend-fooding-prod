@@ -26,7 +26,7 @@ const ModalCreateItemFlashSale = (props) => {
 
     const onFinish = async (values) => {
 
-        let res = await handleCreateNewItemFlashSale(dataFlashsale, values.select, values.price, values.quantity)
+        let res = await handleCreateNewItemFlashSale(dataFlashsale, values.select, values.price, values.quantity, values.soldFlashsale)
         console.log(res)
         if (res && res.data) {
             message.success("Thêm sản phẩm vào flashsale thành công !")
@@ -72,7 +72,7 @@ const ModalCreateItemFlashSale = (props) => {
                 >
 
                     <Row gutter={20} style={{ marginTop: 10 }}>
-                        <Col span={16}>
+                        <Col span={15}>
                             <Form.Item
                                 label="Sản phẩm"
                                 labelCol={{ span: 24 }}
@@ -93,7 +93,7 @@ const ModalCreateItemFlashSale = (props) => {
 
 
                         </Col>
-                        <Col span={4} >
+                        <Col span={3} >
                             <Form.Item
                                 label="Giá sale "
                                 labelCol={{ span: 24 }}
@@ -111,11 +111,28 @@ const ModalCreateItemFlashSale = (props) => {
 
                         </Col>
 
-                        <Col span={4} >
+                        <Col span={3} >
                             <Form.Item
                                 label="Số lượng "
                                 labelCol={{ span: 24 }}
                                 name="quantity"
+                                rules={[
+                                    {
+                                        required: true,
+                                        message: 'Chưa nhập',
+                                    },
+                                ]}
+                            >
+                                <Input type='number' style={{ textAlign: 'center' }} />
+                            </Form.Item>
+
+
+                        </Col>
+                        <Col span={3} >
+                            <Form.Item
+                                label="Đã bán"
+                                labelCol={{ span: 24 }}
+                                name="soldFlashsale"
                                 rules={[
                                     {
                                         required: true,

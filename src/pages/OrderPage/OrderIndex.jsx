@@ -48,14 +48,14 @@ const OrderIndex = () => {
         console.log(res)
         if (res && res.data) {
 
-            setListDiscount(res.data?.listDiscount)
+            setListDiscount(res.data?.listDiscount.splice(0, 2))
 
 
         }
     }
 
     const handleSetCodeSeller = (item) => {
-        if (item.priceApplicable > totalPrice) {
+        if (item.priceApplicable > totalPrice + currentDiscount?.discount) {
             navigate('/')
             return
         }
@@ -241,26 +241,36 @@ const OrderIndex = () => {
                                                             <Col style={{ cursor: 'pointer' }} onClick={() => handleNavigateDetailPage(item)} span={4}>
                                                                 <Avatar size={100} shape="square" src={`${baseURL}/images/${item?.thumbnail}`} />
                                                             </Col>
-                                                            <Col onClick={() => handleNavigateDetailPage(item)} span={9} style={{ color: '#333333', padding: '0px 10px', cursor: 'pointer' }}>
+                                                            <Col onClick={() => handleNavigateDetailPage(item)} span={10} style={{ color: '#333333', padding: '0px 10px', cursor: 'pointer' }}>
                                                                 {item?.mainText}
                                                             </Col>
-                                                            <Col span={6}>
-                                                                <div style={{ padding: '10px 20px', border: '1px solid #ccc', height: 20, borderRadius: 5, width: 60 }}>
-                                                                    <MinusOutlined onClick={(e) => {
-                                                                        e.stopPropagation()
-                                                                        handleMinusQuantity(item)
-                                                                    }} style={{ cursor: 'pointer', color: '#888888' }} />
-                                                                    <input onChange={(e) => {
-                                                                        e.stopPropagation()
-                                                                        handleChaneInputQuantity(item, e.target.value)
-                                                                    }} value={item?.quantity}
-                                                                        style={{ width: 30, height: 20, border: 'none', outline: 'none', textAlign: 'center', fontWeight: 600, color: '#333' }}
-                                                                        type="number" />
-                                                                    <PlusOutlined onClick={(e) => {
-                                                                        e.stopPropagation()
-                                                                        handlePlusQuantity(item)
-                                                                    }} style={{ cursor: 'pointer', color: '#888888' }} />
-                                                                </div>
+                                                            <Col span={5}>
+                                                                <Row gutter={[0, 15]}>
+                                                                    <Col span={24}>
+                                                                        <div style={{ padding: '10px 20px', border: '1px solid #ccc', height: 20, borderRadius: 5, width: 60 }}>
+                                                                            <MinusOutlined onClick={(e) => {
+                                                                                e.stopPropagation()
+                                                                                handleMinusQuantity(item)
+                                                                            }} style={{ cursor: 'pointer', color: '#888888' }} />
+                                                                            <input onChange={(e) => {
+                                                                                e.stopPropagation()
+                                                                                handleChaneInputQuantity(item, e.target.value)
+                                                                            }} value={item?.quantity}
+                                                                                style={{ width: 30, height: 20, border: 'none', outline: 'none', textAlign: 'center', fontWeight: 600, color: '#333' }}
+                                                                                type="number" />
+                                                                            <PlusOutlined onClick={(e) => {
+                                                                                e.stopPropagation()
+                                                                                handlePlusQuantity(item)
+                                                                            }} style={{ cursor: 'pointer', color: '#888888' }} />
+                                                                        </div>
+                                                                    </Col>
+                                                                    {item?.quantityFlashsale ? <Col span={24}>
+                                                                        <div style={{ marginLeft: 10, color: '#c92127', fontSize: 13 }}>
+                                                                            * Còn lại {item?.quantityFlashsale}
+                                                                        </div>
+                                                                    </Col> : <></>}
+                                                                </Row>
+
                                                             </Col>
                                                             <Col span={3} style={{ color: '#c92127', fontWeight: 700, fontSize: 15 }}>
                                                                 {formatter.format(item?.price)} đ
@@ -302,6 +312,9 @@ const OrderIndex = () => {
                                                                                 type="number" />
                                                                             <PlusOutlined onClick={() => handlePlusQuantity(item)} style={{ cursor: 'pointer', color: '#888888' }} />
                                                                         </div>
+                                                                        {item?.quantityFlashsale ? <div style={{ marginLeft: 10, fontSize: 13, color: '#c92127' }}>
+                                                                            * Còn lại {item?.quantityFlashsale}
+                                                                        </div> : <></>}
                                                                         <div style={{ marginLeft: 'auto', color: '#c92127' }}>
                                                                             <DeleteOutlined onClick={() => handleRemoveItem(item)} style={{ fontSize: 20, cursor: 'pointer' }} />
                                                                         </div>
@@ -479,10 +492,10 @@ const OrderIndex = () => {
                     </Row>
                 </Col>
 
-            </Row>
+            </Row >
 
 
-        </div>
+        </div >
     )
 }
 

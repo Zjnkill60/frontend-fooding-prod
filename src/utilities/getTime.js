@@ -4,7 +4,9 @@ export const getInitTimeFuture = async (setSecond, setMinute, setHours, setTimeF
     let res = await fetchInfoFlashsale()
     if (res && res.data) {
         console.log(res)
-        setDataItemFlashSale(res.data?.modelFlashsale[0]?.itemFlashSale)
+        if (setDataItemFlashSale) {
+            setDataItemFlashSale(res.data?.modelFlashsale[0]?.itemFlashSale)
+        }
         let dateFuture = new Date(res.data?.modelFlashsale[0]?.timer)
 
         let dateNow = new Date()
