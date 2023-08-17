@@ -3,6 +3,7 @@ import { useForm } from 'antd/es/form/Form';
 import { useEffect, useState } from 'react';
 import { PlusOutlined } from '@ant-design/icons';
 import { handleCreateProduct, handleUploadFile } from '../../service/api';
+import { valueCook, valueIngredient, valueSweetSoup, valueVegetable } from '../../pages/AdminPage/ManageProduct/constantProd';
 
 
 
@@ -13,6 +14,7 @@ const getBase64 = (file) =>
         reader.onload = () => resolve(reader.result);
         reader.onerror = (error) => reject(error);
     });
+
 
 
 const ModalCreateProduct = (props) => {
@@ -29,11 +31,12 @@ const ModalCreateProduct = (props) => {
     };
 
     const onFinish = async (values) => {
+        console.log(values)
         let imgSlider = slider.map(item => {
             return item.urlUpload
         })
-        const { mainText, author, price, sold, category, percentSale } = values
-        let res = await handleCreateProduct(author, mainText, category, price, percentSale, sold, thumbnail[0].urlUpload, imgSlider)
+        const { mainText, author, price, sold, category, percentSale, type } = values
+        let res = await handleCreateProduct(author, mainText, category, price, percentSale, sold, thumbnail[0].urlUpload, imgSlider, type)
         if (res && res.data) {
             message.success('Tạo mới sản phẩm thành công !')
             await handleGetAllProductPaginate(1, 6)
@@ -43,11 +46,6 @@ const ModalCreateProduct = (props) => {
         }
     };
 
-    useEffect(() => {
-        form.setFieldsValue({
-            category: "KHOA HỌC KỸ THUẬT"
-        })
-    }, [])
 
     //UPLOAD
     const [previewOpen, setPreviewOpen] = useState(false);
@@ -121,11 +119,62 @@ const ModalCreateProduct = (props) => {
             setSlider(imgSlider)
         }
     }
+    //select
+    const [valueSelectType, setValueSelectType] = useState(
+        [
+            {
+                value: 'boil',
+                label: 'Món Luộc',
+            },
+            {
+                value: 'fried',
+                label: 'Món Chiên',
+            },
+            {
+                value: 'braise',
+                label: 'Món Kho',
+            }
+
+        ])
+
+    const handleChange = (value) => {
+        switch (value) {
+            case "cook":
+                setValueSelectType(valueCook)
+                form.setFieldsValue({
+                    type: ""
+                })
+                break;
+            case "ingredient":
+                setValueSelectType(valueIngredient)
+                form.setFieldsValue({
+                    type: ""
+                })
+                break;
+            case "soup":
+                setValueSelectType(valueSweetSoup)
+                form.setFieldsValue({
+                    type: ""
+                })
+                break;
+            case "vegetable":
+                setValueSelectType(valueVegetable)
+                form.setFieldsValue({
+                    type: ""
+                })
+                break;
+
+            default:
+                break;
+        }
+
+    };
+
     return (
         <>
             <Modal className='ant-drawer-content-wrapper' width={'60%'} title="Tạo mới sản phẩm" open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
                 <Form
-                    name="from-add-book"
+                    name="from-add-prod"
                     style={{ marginTop: 50 }}
                     onFinish={onFinish}
                     form={form}
@@ -150,12 +199,12 @@ const ModalCreateProduct = (props) => {
 
                             <Form.Item
                                 labelCol={{ span: 24 }}
-                                label="Tác Giả"
+                                label="Nhà cung cấp"
                                 name="author"
                                 rules={[
                                     {
                                         required: true,
-                                        message: 'Vui lòng nhập tên tác giả ',
+                                        message: 'Vui lòng nhập tên ',
                                     },
                                 ]}
                             >
@@ -212,7 +261,7 @@ const ModalCreateProduct = (props) => {
                     </Row>
 
                     <Row gutter={20}>
-                        <Col span={24}>
+                        <Col span={16}>
                             <Form.Item
                                 label="Thể Loại"
                                 labelCol={{ span: 24 }}
@@ -225,26 +274,45 @@ const ModalCreateProduct = (props) => {
                                 ]}
                             >
                                 <Select
+                                    onChange={handleChange}
                                     style={{ textAlign: 'center' }}
                                     options={[
                                         {
-                                            value: 'VĂN HỌC',
-                                            label: 'VĂN HỌC',
+                                            value: 'cook',
+                                            label: 'ĐỒ ĂN CHẾ BIẾN',
                                         },
                                         {
-                                            value: 'KHOA HỌC KỸ THUẬT',
-                                            label: 'KHOA HỌC KỸ THUẬT',
+                                            value: 'ingredient',
+                                            label: 'NGUYÊN LIỆU',
                                         },
                                         {
-                                            value: 'VĂN HÓA - NGHỆ THUẬT',
-                                            label: 'VĂN HÓA - NGHỆ THUẬT',
+                                            value: 'soup',
+                                            label: 'CHÈ',
                                         },
                                         {
-                                            value: 'KINH TẾ ',
-                                            label: 'KINH TẾ ',
+                                            value: 'vegetable',
+                                            label: 'RAU CỦ QUẢ',
 
                                         },
                                     ]}
+                                />
+                            </Form.Item>
+                        </Col>
+                        <Col span={8}>
+                            <Form.Item
+                                label="Chi tiết"
+                                labelCol={{ span: 24 }}
+                                name="type"
+                                rules={[
+                                    {
+                                        required: true,
+                                        message: 'Vui lòng chọn'
+                                    },
+                                ]}
+                            >
+                                <Select
+                                    style={{ textAlign: 'center' }}
+                                    options={valueSelectType}
                                 />
                             </Form.Item>
                         </Col>

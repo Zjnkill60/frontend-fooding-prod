@@ -3,6 +3,7 @@ import { useForm } from 'antd/es/form/Form';
 import { useEffect, useState } from 'react';
 import { PlusOutlined } from '@ant-design/icons';
 import { handleUpdateProduct, handleUploadFile } from '../../service/api';
+import { valueCook, valueIngredient, valueSweetSoup, valueVegetable } from '../../pages/AdminPage/ManageProduct/constantProd';
 
 
 
@@ -37,8 +38,8 @@ const ModalUpdateProduct = (props) => {
         let imgSlider = slider.map(item => {
             return item.urlUpload
         })
-        const { mainText, author, price, percentSale, sold, category } = values
-        let res = await handleUpdateProduct(dataClick?._id, author, mainText, category, price, percentSale, sold, thumbnail[0].urlUpload, imgSlider)
+        const { mainText, author, price, percentSale, sold, category, type } = values
+        let res = await handleUpdateProduct(dataClick?._id, author, mainText, category, price, percentSale, sold, thumbnail[0].urlUpload, imgSlider, type)
         if (res && res.data) {
             message.success('Update sản phẩm thành công !')
             await handleGetAllProductPaginate(1, 6)
@@ -51,6 +52,7 @@ const ModalUpdateProduct = (props) => {
     useEffect(() => {
         form.setFieldsValue({
             category: dataClick?.category,
+            type: dataClick?.type,
             author: dataClick?.author,
             price: dataClick?.price,
             percentSale: dataClick?.percentSale,
@@ -140,11 +142,63 @@ const ModalUpdateProduct = (props) => {
         }
     }
 
+    //select 
+    const [valueSelectType, setValueSelectType] = useState(
+        [
+            {
+                value: 'boil',
+                label: 'Món Luộc',
+            },
+            {
+                value: 'fried',
+                label: 'Món Chiên',
+            },
+            {
+                value: 'braise',
+                label: 'Món Kho',
+            }
+
+        ])
+
+    const handleChange = (value) => {
+        switch (value) {
+            case "cook":
+                setValueSelectType(valueCook)
+                form.setFieldsValue({
+                    type: ""
+                })
+                break;
+            case "ingredient":
+                setValueSelectType(valueIngredient)
+                form.setFieldsValue({
+                    type: ""
+                })
+                break;
+            case "soup":
+                setValueSelectType(valueSweetSoup)
+                form.setFieldsValue({
+                    type: ""
+                })
+                break;
+            case "vegetable":
+                setValueSelectType(valueVegetable)
+                form.setFieldsValue({
+                    type: ""
+                })
+                break;
+
+            default:
+                break;
+        }
+
+    };
+
+
     return (
         <>
             <Modal width={'60%'} title="Update book" open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
                 <Form
-                    name="from-add-book"
+                    name="from-update-prod"
                     style={{ marginTop: 50 }}
                     onFinish={onFinish}
                     form={form}
@@ -231,7 +285,7 @@ const ModalUpdateProduct = (props) => {
                     </Row>
 
                     <Row gutter={20}>
-                        <Col span={24}>
+                        <Col span={16}>
                             <Form.Item
                                 label="Thể Loại"
                                 labelCol={{ span: 24 }}
@@ -245,27 +299,44 @@ const ModalUpdateProduct = (props) => {
                             >
                                 <Select
                                     style={{ textAlign: 'center' }}
-
-
+                                    onChange={handleChange}
                                     options={[
                                         {
-                                            value: 'VĂN HỌC',
-                                            label: 'VĂN HỌC',
+                                            value: 'cook',
+                                            label: 'ĐỒ ĂN CHẾ BIẾN',
                                         },
                                         {
-                                            value: 'KHOA HỌC KỸ THUẬT',
-                                            label: 'KHOA HỌC KỸ THUẬT',
+                                            value: 'ingredient',
+                                            label: 'NGUYÊN LIỆU',
                                         },
                                         {
-                                            value: 'VĂN HÓA - NGHỆ THUẬT',
-                                            label: 'VĂN HÓA - NGHỆ THUẬT',
+                                            value: 'soup',
+                                            label: 'CHÈ',
                                         },
                                         {
-                                            value: 'KINH TẾ ',
-                                            label: 'KINH TẾ ',
+                                            value: 'vegetable',
+                                            label: 'RAU CỦ QUẢ',
 
                                         },
                                     ]}
+                                />
+                            </Form.Item>
+                        </Col>
+                        <Col span={8}>
+                            <Form.Item
+                                label="Chi tiết"
+                                labelCol={{ span: 24 }}
+                                name="type"
+                                rules={[
+                                    {
+                                        required: true,
+                                        message: 'Vui lòng chọn'
+                                    },
+                                ]}
+                            >
+                                <Select
+                                    style={{ textAlign: 'center' }}
+                                    options={valueSelectType}
                                 />
                             </Form.Item>
                         </Col>

@@ -3,7 +3,7 @@ import './home.scss'
 import { RightOutlined, LeftOutlined, StarOutlined } from '@ant-design/icons'
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from "react-router-dom";
-import { fetchInfoFlashsale, handleFetchProductPaginate } from '../../service/api';
+import { fetchInfoFlashsale, handleFetchProductCategory, handleFetchProductPaginate } from '../../service/api';
 import { getHour, getInitTimeFuture, getMinute, getSecond } from '../../utilities/getTime';
 const baseURL = import.meta.env.VITE_URL_BACKEND
 
@@ -17,8 +17,16 @@ const Home = () => {
     //slider trend
     const sliderTrend = useRef()
     const firstCardSliderTrend = useRef()
+    //slider cook
+    const sliderCook = useRef()
+    const firstCardSliderCook = useRef()
+    //slider ingredient
+    const sliderIngredient = useRef()
+    const firstCardSliderIngredient = useRef()
     const [indexActiveBanner, setIndexActiveBanner] = useState(0)
     const [indexActiveTabs, setIndexActiveTabs] = useState("sold")
+    const [indexActiveTabsCook, setIndexActiveTabsCook] = useState("fried")
+    const [indexActiveTabsIngredient, setIndexActiveTabsIngredient] = useState("chicken")
     //timer
     const [timeFuture, setTimeFuture] = useState(null)
     const [second, setSecond] = useState(0)
@@ -29,6 +37,8 @@ const Home = () => {
     //data item flashsale
     const [dataItemFlashSale, setDataItemFlashSale] = useState([])
     const [dataItemTrend, setDataItemTrend] = useState([])
+    const [dataItemCook, setDataItemCook] = useState([])
+    const [dataItemIngredient, setDataItemIngredient] = useState([])
 
 
     const formatter = new Intl.NumberFormat({
@@ -67,6 +77,13 @@ const Home = () => {
         if (type == "trend") {
             sliderTrend.current.scrollLeft += firstCardSliderTrend.current.offsetWidth
         }
+        if (type == "cook") {
+            sliderCook.current.scrollLeft += firstCardSliderCook.current.offsetWidth
+        }
+
+        if (type == "ingredient") {
+            sliderIngredient.current.scrollLeft += firstCardSliderIngredient.current.offsetWidth
+        }
 
     }
 
@@ -79,6 +96,13 @@ const Home = () => {
             sliderTrend.current.scrollLeft -= firstCardSliderTrend.current.offsetWidth
         }
 
+        if (type == "cook") {
+            sliderCook.current.scrollLeft -= firstCardSliderCook.current.offsetWidth
+        }
+
+        if (type == "ingredient") {
+            sliderIngredient.current.scrollLeft -= firstCardSliderIngredient.current.offsetWidth
+        }
     }
 
 
@@ -88,6 +112,26 @@ const Home = () => {
         let res = await handleFetchProductPaginate(1, 10, `-${key}`)
         if (res && res.data) {
             setDataItemTrend(res.data?.listProduct)
+
+        }
+    }
+
+    const changeActiveTabsCook = async (key) => {
+        setIndexActiveTabsCook(key)
+        setDataItemCook([])
+        let res = await handleFetchProductCategory(1, 10, 'cook', key, 'sold')
+        console.log(res)
+        if (res && res.data) {
+            setDataItemCook(res.data?.listProduct)
+        }
+    }
+
+    const changeActiveTabsIngredient = async (key) => {
+        setIndexActiveTabsIngredient(key)
+        setDataItemIngredient([])
+        let res = await handleFetchProductCategory(1, 10, 'ingredient', key, 'sold')
+        if (res && res.data) {
+            setDataItemIngredient(res.data?.listProduct)
 
         }
     }
@@ -114,12 +158,8 @@ const Home = () => {
 
     const handleNavigateDetailPage = (prod, type) => {
         let nameQuery = slug(prod?.mainText)
-        if (type == "flashsale") {
+        navigate(`/product/${nameQuery}?id=${prod?._id}`, { state: { prod } })
 
-            navigate(`/product/${nameQuery}?id=${prod?._id}`, { state: { prod, isFlashsale: true } })
-        } else {
-            navigate(`/product/${nameQuery}?id=${prod?._id}`, { state: { prod, isFlashsale: false } })
-        }
     }
 
     useEffect(() => {
@@ -137,6 +177,8 @@ const Home = () => {
     useEffect(() => {
         getInitTimeFuture(setSecond, setMinute, setHours, setTimeFuture, setDataItemFlashSale, setIsTimeEnd)
         changeActiveTrendShopping(indexActiveTabs)
+        changeActiveTabsCook(indexActiveTabsCook)
+        changeActiveTabsIngredient(indexActiveTabsIngredient)
     }, [])
 
     useEffect(() => {
@@ -496,7 +538,7 @@ const Home = () => {
                 </Col>
 
                 <Col span={24} className='content-flashsale content-trend-shopping'>
-                    <LeftOutlined onClick={() => handleMoveLeftSlider("trend")} className='arrow-control hide-xs' />
+                    <LeftOutlined onClick={() => handleMoveLeftSlider("cook")} className='arrow-control hide-xs' />
                     <Row>
                         <Col span={24} >
                             <Space style={{ overflow: 'scroll', maxWidth: '100vw' }}>
@@ -508,11 +550,11 @@ const Home = () => {
                         </Col>
                     </Row>
 
-                    <Row style={{ marginTop: 10 }} ref={sliderTrend} gutter={10} className='card-slider-flashsale'>
+                    <Row style={{ marginTop: 10 }} ref={sliderCook} gutter={10} className='card-slider-flashsale'>
 
                         {dataItemTrend?.length > 0 ? dataItemTrend.map((item, index) => {
                             return (
-                                <Col onClick={() => handleNavigateDetailPage(item, "trend")} key={index} ref={firstCardSliderTrend} className='card'>
+                                <Col onClick={() => handleNavigateDetailPage(item, "trend")} key={index} ref={firstCardSliderCook} className='card'>
                                     <Card
                                         hoverable
                                         bordered={false}
@@ -659,7 +701,13 @@ const Home = () => {
 
 
                     </Row>
-                    <RightOutlined onClick={() => handleMoveRightSlider("trend")} className='arrow-control hide-xs' />
+                    <Row style={{ marginTop: 15 }}>
+                        <Button style={{
+                            margin: '0 auto', width: '150px', height: 40,
+                            border: '1px solid #C92127', color: '#c92127', fontWeight: 600
+                        }}>Xem Thêm</Button>
+                    </Row>
+                    <RightOutlined onClick={() => handleMoveRightSlider("cook")} className='arrow-control hide-xs' />
 
 
                 </Col>
@@ -673,291 +721,164 @@ const Home = () => {
                 </Col>
 
                 <Col span={24} className='content-flashsale normal-content'>
-                    <LeftOutlined onClick={() => handleMoveLeftSlider("123")} className='arrow-control hide-xs' />
+                    <LeftOutlined onClick={() => handleMoveLeftSlider("ingredient")} className='arrow-control hide-xs' />
                     <Row>
                         <Col span={24} >
                             <Space style={{ overflow: 'scroll', maxWidth: '100vw' }}>
-                                <div onClick={() => changeActiveTrendShopping(1)} className={indexActiveTabs == 1 ? 'tabs-index tabs-active' : 'tabs-index'}>Món Rán</div>
-                                <div style={{ marginLeft: 3 }} onClick={() => changeActiveTrendShopping(2)} className={indexActiveTabs == 2 ? 'tabs-index tabs-active' : 'tabs-index'}>Món Chiên</div>
-                                <div onClick={() => changeActiveTrendShopping(3)} className={indexActiveTabs == 3 ? 'tabs-index tabs-active' : 'tabs-index'}>Món Luộc</div>
+                                <div onClick={() => changeActiveTabsCook('fried')} className={indexActiveTabsCook == 'fried' ? 'tabs-index tabs-active' : 'tabs-index'}>Món Chiên</div>
+                                <div style={{ marginLeft: 3 }} onClick={() => changeActiveTabsCook('boil')} className={indexActiveTabsCook == 'boil' ? 'tabs-index tabs-active' : 'tabs-index'}>Món Luộc</div>
+                                <div onClick={() => changeActiveTabsCook('braise')} className={indexActiveTabsCook == 'braise' ? 'tabs-index tabs-active' : 'tabs-index'}>Món Kho</div>
 
                             </Space>
                         </Col>
                     </Row>
 
-                    <Row style={{ marginTop: 10 }} gutter={10} className='card-slider-flashsale'>
-                        <Col ref={firstCardSliderTrend} className='card'>
-                            <Card
-                                hoverable
-                                bordered={false}
-                                draggable={false}
+                    <Row ref={sliderIngredient} style={{ marginTop: 10 }} gutter={10} className='card-slider-flashsale'>
+                        {dataItemCook?.length > 0 ? dataItemCook.map((item, index) => {
+                            return (
 
-                                style={{
-                                    width: '100%',
+                                <Col onClick={() => handleNavigateDetailPage(item, "flashsale")} key={index} ref={firstCardSliderIngredient} className='card'>
+                                    <Card
+                                        hoverable
+                                        bordered={false}
+                                        draggable={false}
 
-                                }}
-                                cover={<img draggable={false} alt="example" src="https://os.alipayobjects.com/rmsportal/QBnOOoLaAfKPirc.png" />}
-                            >
-                                <Row className='content-card'>
-                                    <Col span={24} className='title-card'>
-                                        Bóp Viết Eva Học Viện Alpha - HooHooHaHa VPH03-0302 - Jiong
+                                        style={{
+                                            width: '100%',
 
-                                    </Col>
-                                    <Col span={24} className='price-card price-shopping'>
-                                        23.760
+                                        }}
+                                        cover={<img className='img-card' draggable={false} alt="example" src={`${baseURL}/images/${item?.thumbnail}`} />}
+                                    >
+                                        <Row className='content-card'>
+                                            <Col span={24} className='title-card'>
+                                                {item?.mainText}
 
-                                    </Col>
-                                    <Col span={24} className='old-price-card '>
-                                        198.000
+                                            </Col>
+                                            <Col span={24} className='price-card price-shopping'>
+                                                {formatter.format(item?.priceFlashSale && item?.isFlashsale ?
+                                                    item?.priceFlashSale : item?.price)}đ
 
-                                    </Col>
-                                    <Col span={24} className='sold-card sold-shopping'>
-                                        Đã bán 100
-                                    </Col>
-                                </Row>
-                            </Card>
-                        </Col>
-                        <Col className='card'>
-                            <Card
-                                hoverable
-                                bordered={false}
-                                draggable={false}
+                                            </Col>
+                                            <Col span={24} className='old-price-card '>
+                                                {formatter.format(item?.isFlashsale ?
+                                                    item?.price :
+                                                    item?.price + (item?.price / 100 * item?.percentSale))}đ
 
-                                style={{
-                                    width: '100%',
+                                            </Col>
+                                            <Col span={24} className='rate-card'>
+                                                <Rate value={5} style={{ fontSize: 13 }} />
+                                                <span className='number-comment'>({item?.comments.length})</span>
+                                            </Col>
+                                            <Col span={24} className='sold-card sold-shopping'>
+                                                Đã bán {item?.sold}
+                                            </Col>
+                                        </Row>
+                                    </Card>
+                                </Col>
 
-                                }}
-                                cover={<img draggable={false} alt="example" src="https://os.alipayobjects.com/rmsportal/QBnOOoLaAfKPirc.png" />}
-                            >
-                                <Row className='content-card'>
-                                    <Col span={24} className='title-card'>
-                                        Bóp Viết Eva Học Viện Alpha - HooHooHaHa VPH03-0302 - Jiong
+                            )
+                        }) :
+                            <>
+                                <Col className='card'>
+                                    <Card
+                                        hoverable
+                                        bordered={false}
+                                        draggable={false}
 
-                                    </Col>
-                                    <Col span={24} className='price-card price-shopping'>
-                                        23.760
+                                        style={{
+                                            width: '100%',
+                                            height: '100%'
 
-                                    </Col>
-                                    <Col span={24} className='old-price-card '>
-                                        198.000
+                                        }}
 
-                                    </Col>
-                                    <Col span={24} className='sold-card sold-shopping'>
-                                        Đã bán 100
-                                    </Col>
-                                </Row>
-                            </Card>
-                        </Col>
+                                    >
+                                        <Row gutter={[0, 10]}>
+                                            <Skeleton style={{ height: '100%' }} active />
+                                            <Skeleton style={{ height: '100%' }} active />
+                                        </Row>
+                                    </Card>
+                                </Col>
+                                <Col className='card'>
+                                    <Card
+                                        hoverable
+                                        bordered={false}
+                                        draggable={false}
 
-                        <Col className='card'>
-                            <Card
-                                hoverable
-                                bordered={false}
-                                draggable={false}
+                                        style={{
+                                            width: '100%',
+                                            height: '100%'
+                                        }}
 
-                                style={{
-                                    width: '100%',
+                                    >
+                                        <Row gutter={[0, 10]}>
+                                            <Skeleton style={{ height: '100%' }} active />
+                                            <Skeleton style={{ height: '100%' }} active />
+                                        </Row>
+                                    </Card>
+                                </Col>
+                                <Col className='card'>
+                                    <Card
+                                        hoverable
+                                        bordered={false}
+                                        draggable={false}
 
-                                }}
-                                cover={<img draggable={false} alt="example" src="https://os.alipayobjects.com/rmsportal/QBnOOoLaAfKPirc.png" />}
-                            >
-                                <Row className='content-card'>
-                                    <Col span={24} className='title-card'>
-                                        Bóp Viết Eva Học Viện Alpha - HooHooHaHa VPH03-0302 - Jiong
+                                        style={{
+                                            width: '100%',
+                                            height: '100%'
+                                        }}
 
-                                    </Col>
-                                    <Col span={24} className='price-card price-shopping'>
-                                        23.760
+                                    >
+                                        <Row gutter={[0, 10]}>
+                                            <Skeleton style={{ height: '100%' }} active />
+                                            <Skeleton style={{ height: '100%' }} active />
+                                        </Row>
+                                    </Card>
+                                </Col>
+                                <Col className='card'>
+                                    <Card
+                                        hoverable
+                                        bordered={false}
+                                        draggable={false}
 
-                                    </Col>
-                                    <Col span={24} className='old-price-card '>
-                                        198.000
+                                        style={{
+                                            width: '100%',
+                                            height: '100%'
+                                        }}
 
-                                    </Col>
-                                    <Col span={24} className='sold-card sold-shopping'>
-                                        Đã bán 100
-                                    </Col>
-                                </Row>
-                            </Card>
-                        </Col>
+                                    >
+                                        <Row gutter={[0, 10]}>
+                                            <Skeleton style={{ height: '100%' }} active />
+                                            <Skeleton style={{ height: '100%' }} active />
+                                        </Row>
+                                    </Card>
+                                </Col>
+                                <Col className='card'>
+                                    <Card
+                                        hoverable
+                                        bordered={false}
+                                        draggable={false}
 
-                        <Col className='card'>
-                            <Card
-                                hoverable
-                                bordered={false}
-                                draggable={false}
+                                        style={{
+                                            width: '100%',
+                                            height: '100%'
+                                        }}
 
-                                style={{
-                                    width: '100%',
-
-                                }}
-                                cover={<img draggable={false} alt="example" src="https://os.alipayobjects.com/rmsportal/QBnOOoLaAfKPirc.png" />}
-                            >
-                                <Row className='content-card'>
-                                    <Col span={24} className='title-card'>
-                                        Bóp Viết Eva Học Viện Alpha - HooHooHaHa VPH03-0302 - Jiong
-
-                                    </Col>
-                                    <Col span={24} className='price-card price-shopping'>
-                                        23.760
-
-                                    </Col>
-                                    <Col span={24} className='old-price-card '>
-                                        198.000
-
-                                    </Col>
-                                    <Col span={24} className='sold-card sold-shopping'>
-                                        Đã bán 100
-                                    </Col>
-                                </Row>
-                            </Card>
-                        </Col>
-
-                        <Col className='card'>
-                            <Card
-                                hoverable
-                                bordered={false}
-                                draggable={false}
-
-                                style={{
-                                    width: '100%',
-
-                                }}
-                                cover={<img draggable={false} alt="example" src="https://os.alipayobjects.com/rmsportal/QBnOOoLaAfKPirc.png" />}
-                            >
-                                <Row className='content-card'>
-                                    <Col span={24} className='title-card'>
-                                        Bóp Viết Eva Học Viện Alpha - HooHooHaHa VPH03-0302 - Jiong
-
-                                    </Col>
-                                    <Col span={24} className='price-card price-shopping'>
-                                        23.760
-
-                                    </Col>
-                                    <Col span={24} className='old-price-card '>
-                                        198.000
-
-                                    </Col>
-                                    <Col span={24} className='sold-card sold-shopping'>
-                                        Đã bán 100
-                                    </Col>
-                                </Row>
-                            </Card>
-                        </Col>
-
-                        <Col className='card'>
-                            <Card
-                                hoverable
-                                bordered={false}
-                                draggable={false}
-
-                                style={{
-                                    width: '100%',
-
-                                }}
-                                cover={<img draggable={false} alt="example" src="https://os.alipayobjects.com/rmsportal/QBnOOoLaAfKPirc.png" />}
-                            >
-                                <Row className='content-card'>
-                                    <Col span={24} className='title-card'>
-                                        Bóp Viết Eva Học Viện Alpha - HooHooHaHa VPH03-0302 - Jiong
-
-                                    </Col>
-                                    <Col span={24} className='price-card price-shopping'>
-                                        23.760
-
-                                    </Col>
-                                    <Col span={24} className='old-price-card '>
-                                        198.000
-
-                                    </Col>
-                                    <Col span={24} className='sold-card sold-shopping'>
-                                        Đã bán 100
-                                    </Col>
-                                </Row>
-                            </Card>
-                        </Col>
-
-                        <Col className='card'>
-                            <Card
-                                hoverable
-                                bordered={false}
-                                draggable={false}
-
-                                style={{
-                                    width: '100%',
-
-                                }}
-                                cover={<img draggable={false} alt="example" src="https://os.alipayobjects.com/rmsportal/QBnOOoLaAfKPirc.png" />}
-                            >
-                                <Row className='content-card'>
-                                    <Col span={24} className='title-card'>
-                                        Bóp Viết Eva Học Viện Alpha - HooHooHaHa VPH03-0302 - Jiong
-
-                                    </Col>
-                                    <Col span={24} className='price-card price-shopping'>
-                                        23.760
-
-                                    </Col>
-                                    <Col span={24} className='old-price-card '>
-                                        198.000
-
-                                    </Col>
-                                    <Col span={24} className='sold-card sold-shopping'>
-                                        Đã bán 100
-                                    </Col>
-                                </Row>
-                            </Card>
-                        </Col>
-
-                        <Col className='card'>
-                            <Card
-                                hoverable
-                                bordered={false}
-                                draggable={false}
-
-                                style={{
-                                    width: '100%',
-
-                                }}
-                                cover={<img draggable={false} alt="example" src="https://os.alipayobjects.com/rmsportal/QBnOOoLaAfKPirc.png" />}
-                            >
-                                <Row className='content-card'>
-                                    <Col span={24} className='title-card'>
-                                        Bóp Viết Eva Học Viện Alpha - HooHooHaHa VPH03-0302 - Jiong
-
-                                    </Col>
-                                    <Col span={24} className='price-card price-shopping'>
-                                        23.760
-
-                                    </Col>
-                                    <Col span={24} className='old-price-card '>
-                                        198.000
-
-                                    </Col>
-                                    <Col span={24} className='sold-card sold-shopping'>
-                                        Đã bán 100
-                                    </Col>
-                                </Row>
-                            </Card>
-                        </Col>
+                                    >
+                                        <Row gutter={[0, 10]}>
+                                            <Skeleton style={{ height: '100%' }} active />
+                                            <Skeleton style={{ height: '100%' }} active />
+                                        </Row>
+                                    </Card>
+                                </Col>
 
 
 
-
-
-
-
-
+                            </>}
 
                     </Row>
 
-                    <Row style={{ marginTop: 15 }}>
-                        <Button style={{
-                            margin: '0 auto', width: '150px', height: 40,
-                            border: '1px solid #C92127', color: '#c92127', fontWeight: 600
-                        }}>Xem Thêm</Button>
-                    </Row>
-                    <RightOutlined onClick={() => handleMoveRightSlider("123")} className='arrow-control hide-xs' />
+
+                    <RightOutlined onClick={() => handleMoveRightSlider("ingredient")} className='arrow-control hide-xs' />
 
 
                 </Col>
@@ -975,285 +896,158 @@ const Home = () => {
                     <Row>
                         <Col span={24} >
                             <Space style={{ overflow: 'scroll', maxWidth: '100vw' }}>
-                                <div onClick={() => changeActiveTrendShopping(1)} className={indexActiveTabs == 1 ? 'tabs-index tabs-active' : 'tabs-index'}>Thịt Gà</div>
-                                <div style={{ marginLeft: 3 }} onClick={() => changeActiveTrendShopping(2)} className={indexActiveTabs == 2 ? 'tabs-index tabs-active' : 'tabs-index'}>Thịt Bò</div>
-                                <div onClick={() => changeActiveTrendShopping(3)} className={indexActiveTabs == 3 ? 'tabs-index tabs-active' : 'tabs-index'}>Thịt Vịt</div>
+                                <div onClick={() => changeActiveTabsIngredient('chicken')} className={indexActiveTabsIngredient == 'chicken' ? 'tabs-index tabs-active' : 'tabs-index'}>Thịt Gà</div>
+                                <div style={{ marginLeft: 3 }} onClick={() => changeActiveTabsIngredient('cow')} className={indexActiveTabsIngredient == 'cow' ? 'tabs-index tabs-active' : 'tabs-index'}>Thịt Bò</div>
+                                <div onClick={() => changeActiveTabsIngredient('duck')} className={indexActiveTabsIngredient == 'duck' ? 'tabs-index tabs-active' : 'tabs-index'}>Thịt Vịt</div>
 
                             </Space>
                         </Col>
                     </Row>
 
                     <Row style={{ marginTop: 10 }} gutter={10} className='card-slider-flashsale'>
-                        <Col ref={firstCardSliderTrend} className='card'>
-                            <Card
-                                hoverable
-                                bordered={false}
-                                draggable={false}
+                        {dataItemIngredient?.length > 0 ? dataItemIngredient.map((item, index) => {
+                            return (
 
-                                style={{
-                                    width: '100%',
+                                <Col onClick={() => handleNavigateDetailPage(item, "flashsale")} key={index} ref={firstCardSliderTrend} className='card'>
+                                    <Card
+                                        hoverable
+                                        bordered={false}
+                                        draggable={false}
 
-                                }}
-                                cover={<img draggable={false} alt="example" src="https://os.alipayobjects.com/rmsportal/QBnOOoLaAfKPirc.png" />}
-                            >
-                                <Row className='content-card'>
-                                    <Col span={24} className='title-card'>
-                                        Bóp Viết Eva Học Viện Alpha - HooHooHaHa VPH03-0302 - Jiong
+                                        style={{
+                                            width: '100%',
 
-                                    </Col>
-                                    <Col span={24} className='price-card price-shopping'>
-                                        23.760
+                                        }}
+                                        cover={<img className='img-card' draggable={false} alt="example" src={`${baseURL}/images/${item?.thumbnail}`} />}
+                                    >
+                                        <Row className='content-card'>
+                                            <Col span={24} className='title-card'>
+                                                {item?.mainText}
 
-                                    </Col>
-                                    <Col span={24} className='old-price-card '>
-                                        198.000
+                                            </Col>
+                                            <Col span={24} className='price-card price-shopping'>
+                                                {formatter.format(item?.priceFlashSale && item?.isFlashsale ?
+                                                    item?.priceFlashSale : item?.price)}đ
 
-                                    </Col>
-                                    <Col span={24} className='sold-card sold-shopping'>
-                                        Đã bán 100
-                                    </Col>
-                                </Row>
-                            </Card>
-                        </Col>
-                        <Col className='card'>
-                            <Card
-                                hoverable
-                                bordered={false}
-                                draggable={false}
+                                            </Col>
+                                            <Col span={24} className='old-price-card '>
+                                                {formatter.format(item?.isFlashsale ?
+                                                    item?.price :
+                                                    item?.price + (item?.price / 100 * item?.percentSale))}đ
 
-                                style={{
-                                    width: '100%',
+                                            </Col>
+                                            <Col span={24} className='rate-card'>
+                                                <Rate value={5} style={{ fontSize: 13 }} />
+                                                <span className='number-comment'>({item?.comments.length})</span>
+                                            </Col>
+                                            <Col span={24} className='sold-card sold-shopping'>
+                                                Đã bán {item?.sold}
+                                            </Col>
+                                        </Row>
+                                    </Card>
+                                </Col>
 
-                                }}
-                                cover={<img draggable={false} alt="example" src="https://os.alipayobjects.com/rmsportal/QBnOOoLaAfKPirc.png" />}
-                            >
-                                <Row className='content-card'>
-                                    <Col span={24} className='title-card'>
-                                        Bóp Viết Eva Học Viện Alpha - HooHooHaHa VPH03-0302 - Jiong
+                            )
+                        }) :
+                            <>
+                                <Col className='card'>
+                                    <Card
+                                        hoverable
+                                        bordered={false}
+                                        draggable={false}
 
-                                    </Col>
-                                    <Col span={24} className='price-card price-shopping'>
-                                        23.760
+                                        style={{
+                                            width: '100%',
+                                            height: '100%'
 
-                                    </Col>
-                                    <Col span={24} className='old-price-card '>
-                                        198.000
+                                        }}
 
-                                    </Col>
-                                    <Col span={24} className='sold-card sold-shopping'>
-                                        Đã bán 100
-                                    </Col>
-                                </Row>
-                            </Card>
-                        </Col>
+                                    >
+                                        <Row gutter={[0, 10]}>
+                                            <Skeleton style={{ height: '100%' }} active />
+                                            <Skeleton style={{ height: '100%' }} active />
+                                        </Row>
+                                    </Card>
+                                </Col>
+                                <Col className='card'>
+                                    <Card
+                                        hoverable
+                                        bordered={false}
+                                        draggable={false}
 
-                        <Col className='card'>
-                            <Card
-                                hoverable
-                                bordered={false}
-                                draggable={false}
+                                        style={{
+                                            width: '100%',
+                                            height: '100%'
+                                        }}
 
-                                style={{
-                                    width: '100%',
+                                    >
+                                        <Row gutter={[0, 10]}>
+                                            <Skeleton style={{ height: '100%' }} active />
+                                            <Skeleton style={{ height: '100%' }} active />
+                                        </Row>
+                                    </Card>
+                                </Col>
+                                <Col className='card'>
+                                    <Card
+                                        hoverable
+                                        bordered={false}
+                                        draggable={false}
 
-                                }}
-                                cover={<img draggable={false} alt="example" src="https://os.alipayobjects.com/rmsportal/QBnOOoLaAfKPirc.png" />}
-                            >
-                                <Row className='content-card'>
-                                    <Col span={24} className='title-card'>
-                                        Bóp Viết Eva Học Viện Alpha - HooHooHaHa VPH03-0302 - Jiong
+                                        style={{
+                                            width: '100%',
+                                            height: '100%'
+                                        }}
 
-                                    </Col>
-                                    <Col span={24} className='price-card price-shopping'>
-                                        23.760
+                                    >
+                                        <Row gutter={[0, 10]}>
+                                            <Skeleton style={{ height: '100%' }} active />
+                                            <Skeleton style={{ height: '100%' }} active />
+                                        </Row>
+                                    </Card>
+                                </Col>
+                                <Col className='card'>
+                                    <Card
+                                        hoverable
+                                        bordered={false}
+                                        draggable={false}
 
-                                    </Col>
-                                    <Col span={24} className='old-price-card '>
-                                        198.000
+                                        style={{
+                                            width: '100%',
+                                            height: '100%'
+                                        }}
 
-                                    </Col>
-                                    <Col span={24} className='sold-card sold-shopping'>
-                                        Đã bán 100
-                                    </Col>
-                                </Row>
-                            </Card>
-                        </Col>
+                                    >
+                                        <Row gutter={[0, 10]}>
+                                            <Skeleton style={{ height: '100%' }} active />
+                                            <Skeleton style={{ height: '100%' }} active />
+                                        </Row>
+                                    </Card>
+                                </Col>
+                                <Col className='card'>
+                                    <Card
+                                        hoverable
+                                        bordered={false}
+                                        draggable={false}
 
-                        <Col className='card'>
-                            <Card
-                                hoverable
-                                bordered={false}
-                                draggable={false}
+                                        style={{
+                                            width: '100%',
+                                            height: '100%'
+                                        }}
 
-                                style={{
-                                    width: '100%',
-
-                                }}
-                                cover={<img draggable={false} alt="example" src="https://os.alipayobjects.com/rmsportal/QBnOOoLaAfKPirc.png" />}
-                            >
-                                <Row className='content-card'>
-                                    <Col span={24} className='title-card'>
-                                        Bóp Viết Eva Học Viện Alpha - HooHooHaHa VPH03-0302 - Jiong
-
-                                    </Col>
-                                    <Col span={24} className='price-card price-shopping'>
-                                        23.760
-
-                                    </Col>
-                                    <Col span={24} className='old-price-card '>
-                                        198.000
-
-                                    </Col>
-                                    <Col span={24} className='sold-card sold-shopping'>
-                                        Đã bán 100
-                                    </Col>
-                                </Row>
-                            </Card>
-                        </Col>
-
-                        <Col className='card'>
-                            <Card
-                                hoverable
-                                bordered={false}
-                                draggable={false}
-
-                                style={{
-                                    width: '100%',
-
-                                }}
-                                cover={<img draggable={false} alt="example" src="https://os.alipayobjects.com/rmsportal/QBnOOoLaAfKPirc.png" />}
-                            >
-                                <Row className='content-card'>
-                                    <Col span={24} className='title-card'>
-                                        Bóp Viết Eva Học Viện Alpha - HooHooHaHa VPH03-0302 - Jiong
-
-                                    </Col>
-                                    <Col span={24} className='price-card price-shopping'>
-                                        23.760
-
-                                    </Col>
-                                    <Col span={24} className='old-price-card '>
-                                        198.000
-
-                                    </Col>
-                                    <Col span={24} className='sold-card sold-shopping'>
-                                        Đã bán 100
-                                    </Col>
-                                </Row>
-                            </Card>
-                        </Col>
-
-                        <Col className='card'>
-                            <Card
-                                hoverable
-                                bordered={false}
-                                draggable={false}
-
-                                style={{
-                                    width: '100%',
-
-                                }}
-                                cover={<img draggable={false} alt="example" src="https://os.alipayobjects.com/rmsportal/QBnOOoLaAfKPirc.png" />}
-                            >
-                                <Row className='content-card'>
-                                    <Col span={24} className='title-card'>
-                                        Bóp Viết Eva Học Viện Alpha - HooHooHaHa VPH03-0302 - Jiong
-
-                                    </Col>
-                                    <Col span={24} className='price-card price-shopping'>
-                                        23.760
-
-                                    </Col>
-                                    <Col span={24} className='old-price-card '>
-                                        198.000
-
-                                    </Col>
-                                    <Col span={24} className='sold-card sold-shopping'>
-                                        Đã bán 100
-                                    </Col>
-                                </Row>
-                            </Card>
-                        </Col>
-
-                        <Col className='card'>
-                            <Card
-                                hoverable
-                                bordered={false}
-                                draggable={false}
-
-                                style={{
-                                    width: '100%',
-
-                                }}
-                                cover={<img draggable={false} alt="example" src="https://os.alipayobjects.com/rmsportal/QBnOOoLaAfKPirc.png" />}
-                            >
-                                <Row className='content-card'>
-                                    <Col span={24} className='title-card'>
-                                        Bóp Viết Eva Học Viện Alpha - HooHooHaHa VPH03-0302 - Jiong
-
-                                    </Col>
-                                    <Col span={24} className='price-card price-shopping'>
-                                        23.760
-
-                                    </Col>
-                                    <Col span={24} className='old-price-card '>
-                                        198.000
-
-                                    </Col>
-                                    <Col span={24} className='sold-card sold-shopping'>
-                                        Đã bán 100
-                                    </Col>
-                                </Row>
-                            </Card>
-                        </Col>
-
-                        <Col className='card'>
-                            <Card
-                                hoverable
-                                bordered={false}
-                                draggable={false}
-
-                                style={{
-                                    width: '100%',
-
-                                }}
-                                cover={<img draggable={false} alt="example" src="https://os.alipayobjects.com/rmsportal/QBnOOoLaAfKPirc.png" />}
-                            >
-                                <Row className='content-card'>
-                                    <Col span={24} className='title-card'>
-                                        Bóp Viết Eva Học Viện Alpha - HooHooHaHa VPH03-0302 - Jiong
-
-                                    </Col>
-                                    <Col span={24} className='price-card price-shopping'>
-                                        23.760
-
-                                    </Col>
-                                    <Col span={24} className='old-price-card '>
-                                        198.000
-
-                                    </Col>
-                                    <Col span={24} className='sold-card sold-shopping'>
-                                        Đã bán 100
-                                    </Col>
-                                </Row>
-                            </Card>
-                        </Col>
+                                    >
+                                        <Row gutter={[0, 10]}>
+                                            <Skeleton style={{ height: '100%' }} active />
+                                            <Skeleton style={{ height: '100%' }} active />
+                                        </Row>
+                                    </Card>
+                                </Col>
 
 
 
-
-
-
-
-
+                            </>}
 
                     </Row>
-                    <Row style={{ marginTop: 15 }}>
-                        <Button style={{
-                            margin: '0 auto', width: '150px', height: 40,
-                            border: '1px solid #C92127', color: '#c92127', fontWeight: 600
-                        }}>Xem Thêm</Button>
-                    </Row>
+
                     <RightOutlined onClick={() => handleMoveRightSlider("213")} className='arrow-control hide-xs' />
 
 

@@ -82,16 +82,22 @@ export const handleFetchProductPaginate = async (current, pageSize, sort) => {
 
 }
 
+export const handleFetchProductCategory = async (current, pageSize, category, type, sort) => {
+
+    return await axios.get(`product?current=${current}&pageSize=${pageSize}&category=${category}&type=${type}&sort=${sort}`)
+
+}
+
 export const handleFilterNameProduct = async (current, pageSize, filter) => {
     return await axios.get(`product?current=${current}&pageSize=${pageSize}&mainText=/${filter}/i`)
 }
 
-export const handleCreateProduct = async (author, mainText, category, price, percentSale, sold, thumbnail, slider) => {
-    return await axios.post('product', { author, mainText, category, price, percentSale, sold, thumbnail, slider })
+export const handleCreateProduct = async (author, mainText, category, price, percentSale, sold, thumbnail, slider, type) => {
+    return await axios.post('product', { author, mainText, category, price, percentSale, sold, thumbnail, slider, type })
 }
 
-export const handleUpdateProduct = async (id, author, mainText, category, price, percentSale, sold, thumbnail, slider) => {
-    return await axios.patch(`product/${id}`, { author, mainText, category, price, percentSale, sold, thumbnail, slider })
+export const handleUpdateProduct = async (id, author, mainText, category, price, percentSale, sold, thumbnail, slider, type) => {
+    return await axios.patch(`product/${id}`, { author, mainText, category, price, percentSale, sold, thumbnail, slider, type })
 }
 
 export const handleDeleteProduct = async (id) => {

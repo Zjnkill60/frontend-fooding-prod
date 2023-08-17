@@ -35,7 +35,7 @@ const Footer = () => {
                         <Col xs={24} sm={24} md={24} lg={10} xl={10} xxl={10}>
                             <Row >
                                 <Col span={24} style={{ marginTop: 30 }}>
-                                    <img src="https://cdn0.fahasa.com/skin/frontend/ma_vanese/fahasa/images/logo.png" />
+                                    <img style={{ width: 300 }} src={"/366234224_2528201954012003_6572641911100881814_n.png"} />
                                 </Col>
                                 <Col span={24} style={{ fontSize: 13, color: '#333333', margin: '20px 0' }}>
                                     Lầu 5, 387-389 Hai Bà Trưng Quận 3 TP HCMCông Ty Cổ Phần Phát Hành Sách TP HCM - FAHASA60 - 62 Lê Lợi, Quận 1, TP. HCM, Việt Nam
