@@ -26,6 +26,7 @@ const DealHotPage = () => {
     };
 
     const handleFetchProduct = async (current, pageSize, category, type, sort) => {
+        setDataItem(null)
         let res = await handleFetchProductCategory(current, pageSize, category, type, sort)
         console.log(res)
         if (res && res.data) {
