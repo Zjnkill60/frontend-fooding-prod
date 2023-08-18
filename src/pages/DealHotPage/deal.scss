@@ -1,0 +1,151 @@
+.title-trend {
+    display: flex;
+    height: 50px !important;
+    align-items: center;
+    background-color: #fcddef !important;
+
+    padding: 0 15px;
+
+}
+
+.tabs-slider {
+    position: relative;
+    display: flex;
+    align-items: center;
+    min-width: 100%;
+    white-space: nowrap;
+    overflow: scroll;
+    scroll-behavior: smooth;
+}
+
+.tabs-slider::-webkit-scrollbar {
+    display: none;
+    /* for Chrome, Safari, and Opera */
+}
+
+.tabs-trend-shopping {
+    font-size: 14px;
+    padding: 8px 15px;
+    border: 1px solid #888888;
+    border-radius: 5px;
+    color: #888888;
+}
+
+.tabs-trend-shopping.tabs-active {
+    border: 1px solid #f7941e !important;
+    border-radius: 5px;
+    color: #f7941e !important;
+    font-weight: 700;
+}
+
+
+.card-slider-shopping {
+
+
+    .card-trend-shopping {
+        width: 20%;
+        min-height: 380px !important;
+
+        .content-card {
+            height: 160px;
+            position: relative;
+
+            .title-card {
+                height: 40px;
+                overflow: hidden;
+                font-size: 14px;
+                color: #333333;
+                font-weight: 500;
+            }
+
+
+
+            .price-card {
+
+                position: absolute;
+                bottom: 50%;
+                font-size: 18px;
+                color: #f7941e;
+                font-weight: 600;
+                margin: 7px 0 3px;
+            }
+
+            .old-price-card {
+                position: absolute;
+                bottom: 37%;
+                font-size: 14px;
+                color: #888888;
+                text-decoration: line-through;
+            }
+
+
+
+            .sold-card {
+                position: absolute;
+                bottom: 0;
+                width: 100%;
+                height: 18px;
+                background-color: #C92127;
+                display: grid;
+                place-items: center;
+                color: #fff;
+                border-radius: 20px;
+                font-size: 13px;
+
+            }
+
+            .rate-card {
+                position: absolute;
+                bottom: 20%;
+                display: flex;
+                align-items: center;
+
+                .number-comment {
+                    margin-top: 1px;
+                    margin-left: 10px;
+                    color: #f7941e;
+                }
+            }
+
+        }
+
+        .img-card {
+            height: 200px;
+            object-fit: cover;
+        }
+    }
+}
+
+@media (max-width: 578px) {
+
+    .hide-trend-shopping-mobile {
+        display: none !important;
+    }
+
+    .card-trend-shopping {
+        width: 50% !important;
+    }
+
+    .card-slider-shopping {
+        margin: 0 !important;
+    }
+}
+
+@media (min-width: 579px) and (max-width: 998px) {
+
+    .hide-trend-shopping-mobile {
+        display: none !important;
+    }
+
+    .page-shopping-container {
+        max-width: 760px !important;
+    }
+
+    .card-trend-shopping {
+        width: 33% !important;
+    }
+
+    .card-slider-shopping {
+        margin: 0 !important;
+    }
+}

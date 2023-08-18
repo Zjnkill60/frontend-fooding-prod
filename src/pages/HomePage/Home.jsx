@@ -702,7 +702,7 @@ const Home = () => {
 
                     </Row>
                     <Row style={{ marginTop: 15 }}>
-                        <Button style={{
+                        <Button onClick={() => navigate('/xu-huong-mua-sam')} style={{
                             margin: '0 auto', width: '150px', height: 40,
                             border: '1px solid #C92127', color: '#c92127', fontWeight: 600
                         }}>Xem Thêm</Button>

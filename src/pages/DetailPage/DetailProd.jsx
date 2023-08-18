@@ -348,6 +348,46 @@ const DetailProd = () => {
 
     }, [second])
 
+    const category = () => {
+        switch (dataProd?.category) {
+            case "cook":
+                return "ĐỒ ĂN CHẾ BIẾN"
+                break;
+            case "ingredient":
+                return "NGUYÊN LIỆU"
+                break;
+            case "vegetable":
+                return "RAU CỦ QUẢ"
+                break;
+            default:
+                break;
+        }
+
+    }
+    const type = () => {
+        switch (dataProd?.type) {
+            case "chicken":
+                return "THỊT GÀ"
+
+            case "duck":
+                return "THỊT VỊT"
+
+            case "cow":
+                return "THỊT BÒ"
+            case "boil":
+                return "MÓN LUỘC"
+
+            case "fried":
+                return "MÓN CHIÊN"
+
+            case "brause":
+                return "MÓN KHO"
+
+            default:
+                break;
+        }
+
+    }
 
 
 
@@ -376,12 +416,12 @@ const DetailProd = () => {
                                     alignItems: 'center'
                                 }}
                             >
-                                <Breadcrumb.Item>SÁCH TIẾNG VIỆT</Breadcrumb.Item>
-                                <Breadcrumb.Item>{dataProd?.category}</Breadcrumb.Item>
+                                <Breadcrumb.Item>{category()}</Breadcrumb.Item>
+                                <Breadcrumb.Item>{type()}</Breadcrumb.Item>
 
                             </Breadcrumb>
                         </Col>
-                        {dataProd ? <Col span={24} className="detail-page-content">
+                        {dataProd ? <Col span={24} className="detail-page-content" >
                             <Row >
                                 <Col xs={24} sm={24} md={24} lg={10} xl={10} xxl={10} className="content-left">
                                     <Row >

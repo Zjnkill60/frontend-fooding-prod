@@ -83,9 +83,17 @@ export const handleFetchProductPaginate = async (current, pageSize, sort) => {
 }
 
 export const handleFetchProductCategory = async (current, pageSize, category, type, sort) => {
+    if (category == "all") {
+        return await axios.get(`product?sort=${sort}`)
 
-    return await axios.get(`product?current=${current}&pageSize=${pageSize}&category=${category}&type=${type}&sort=${sort}`)
+    } else {
+        if (type) {
+            return await axios.get(`product?current=${current}&pageSize=${pageSize}&category=${category}&type=${type}&sort=${sort}`)
+        } else {
+            return await axios.get(`product?current=${current}&pageSize=${pageSize}&category=${category}&sort=${sort}`)
 
+        }
+    }
 }
 
 export const handleFilterNameProduct = async (current, pageSize, filter) => {

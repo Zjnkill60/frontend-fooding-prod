@@ -32,6 +32,7 @@ import History from "./pages/HistoryPage/History";
 import { Col, message, Row } from "antd";
 import SiderAccount from "./pages/AccountPage/SiderAccount";
 import ListAddress from "./pages/AccountPage/ListAddress";
+import DealHotPage from "./pages/DealHotPage/DealHotPage";
 
 
 
@@ -101,7 +102,6 @@ function App() {
       distpach(handleDispatchLogin(res.data?.user))
     } else {
       distpach(handleDispatchLogout())
-      message.error("Vui lòng đăng nhập lại !")
     }
 
   }
@@ -138,6 +138,10 @@ function App() {
       {
         path: 'product/:slug',
         element: <DetailProd />
+      },
+      {
+        path: 'xu-huong-mua-sam',
+        element: <DealHotPage />
       }
       ]
     },

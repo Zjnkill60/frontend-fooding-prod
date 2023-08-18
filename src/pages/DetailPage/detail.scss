@@ -234,17 +234,19 @@
 
 @media only screen and (max-width: 600px) {
     .content-right {
-        padding: 5px 0 !important;
+        padding: 0 !important;
 
 
         .title-prod {
             font-size: 18px !important;
-            padding: 0 13px !important;
+            padding: 10px 13px !important;
             color: #333;
+
 
         }
 
         .sub-title-prod {
+            margin-top: 0 !important;
             padding: 0 13px !important;
             display: flex;
             align-items: center;
