@@ -1,6 +1,6 @@
 import { Breadcrumb, Card, Col, Divider, Row, Select, Skeleton, Space, Rate } from "antd"
 import './deal.scss'
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { handleFetchProductCategory } from "../../service/api";
 import { useNavigate } from "react-router-dom";
 
@@ -13,14 +13,18 @@ const formatter = new Intl.NumberFormat({
 const DealHotPage = () => {
     const navigate = useNavigate()
     const [indexActiveTabs, setIndexActiveTabs] = useState("all")
+    const [dataSelect, setDataSelect] = useState("-sold")
     const [dataItem, setDataItem] = useState(null)
 
     const handleChangeActiveTabs = (tab) => {
         setIndexActiveTabs(tab)
         handleFetchProduct(1, 30, tab, undefined, '-sold')
+        setDataSelect("-sold")
+
     }
 
     const handleChange = (value) => {
+        setDataSelect(value)
         handleFetchProduct(1, 30, indexActiveTabs, undefined, value)
 
     };
@@ -28,7 +32,6 @@ const DealHotPage = () => {
     const handleFetchProduct = async (current, pageSize, category, type, sort) => {
         setDataItem(null)
         let res = await handleFetchProductCategory(current, pageSize, category, type, sort)
-        console.log(res)
         if (res && res.data) {
             setDataItem(res.data?.listProduct)
 
@@ -107,7 +110,7 @@ const DealHotPage = () => {
                         <Row style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end' }}>
                             <span className="hide-trend-shopping-mobile" style={{ marginRight: 20 }}>Sắp xếp theo :</span>
                             <Select
-                                defaultValue="-sold"
+                                value={dataSelect}
                                 style={{
                                     width: 200,
 

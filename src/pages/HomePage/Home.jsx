@@ -541,7 +541,7 @@ const Home = () => {
                     <LeftOutlined onClick={() => handleMoveLeftSlider("cook")} className='arrow-control hide-xs' />
                     <Row>
                         <Col span={24} >
-                            <Space style={{ overflow: 'scroll', maxWidth: '100vw' }}>
+                            <Space >
                                 <div onClick={() => changeActiveTrendShopping("sold")} className={indexActiveTabs == "sold" ? 'tabs-index tabs-active' : 'tabs-index'}>Bán Chạy Nhất</div>
                                 <div style={{ marginLeft: 3 }} onClick={() => changeActiveTrendShopping("createdAt")} className={indexActiveTabs == "createdAt" ? 'tabs-index tabs-active' : 'tabs-index'}>Đồ Mới</div>
                                 <div onClick={() => changeActiveTrendShopping("percentSale")} className={indexActiveTabs == "percentSale" ? 'tabs-index tabs-active' : 'tabs-index'}>Best-seller</div>
@@ -724,7 +724,7 @@ const Home = () => {
                     <LeftOutlined onClick={() => handleMoveLeftSlider("ingredient")} className='arrow-control hide-xs' />
                     <Row>
                         <Col span={24} >
-                            <Space style={{ overflow: 'scroll', maxWidth: '100vw' }}>
+                            <Space >
                                 <div onClick={() => changeActiveTabsCook('fried')} className={indexActiveTabsCook == 'fried' ? 'tabs-index tabs-active' : 'tabs-index'}>Món Chiên</div>
                                 <div style={{ marginLeft: 3 }} onClick={() => changeActiveTabsCook('boil')} className={indexActiveTabsCook == 'boil' ? 'tabs-index tabs-active' : 'tabs-index'}>Món Luộc</div>
                                 <div onClick={() => changeActiveTabsCook('braise')} className={indexActiveTabsCook == 'braise' ? 'tabs-index tabs-active' : 'tabs-index'}>Món Kho</div>
@@ -895,7 +895,7 @@ const Home = () => {
                     <LeftOutlined onClick={() => handleMoveLeftSlider("213")} className='arrow-control hide-xs' />
                     <Row>
                         <Col span={24} >
-                            <Space style={{ overflow: 'scroll', maxWidth: '100vw' }}>
+                            <Space >
                                 <div onClick={() => changeActiveTabsIngredient('chicken')} className={indexActiveTabsIngredient == 'chicken' ? 'tabs-index tabs-active' : 'tabs-index'}>Thịt Gà</div>
                                 <div style={{ marginLeft: 3 }} onClick={() => changeActiveTabsIngredient('cow')} className={indexActiveTabsIngredient == 'cow' ? 'tabs-index tabs-active' : 'tabs-index'}>Thịt Bò</div>
                                 <div onClick={() => changeActiveTabsIngredient('duck')} className={indexActiveTabsIngredient == 'duck' ? 'tabs-index tabs-active' : 'tabs-index'}>Thịt Vịt</div>
