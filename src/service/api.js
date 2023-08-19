@@ -88,7 +88,11 @@ export const handleFetchProductCategory = async (current, pageSize, category, ty
 
     } else {
         if (type) {
-            return await axios.get(`product?current=${current}&pageSize=${pageSize}&category=${category}&type=${type}&sort=${sort}`)
+            if (type == "all") {
+                return await axios.get(`product?current=${current}&pageSize=${pageSize}&category=${category}&sort=${sort}`)
+            } else {
+                return await axios.get(`product?current=${current}&pageSize=${pageSize}&category=${category}&type=${type}&sort=${sort}`)
+            }
         } else {
             return await axios.get(`product?current=${current}&pageSize=${pageSize}&category=${category}&sort=${sort}`)
 

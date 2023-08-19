@@ -321,7 +321,7 @@ const Home = () => {
                                             </Col>
 
                                             <Col span={24} className='rate-card'>
-                                                <Rate value={5} style={{ fontSize: 13 }} />
+                                                <Rate disabled value={item?.comments?.length > 0 ? 5 : 0} style={{ fontSize: 13 }} />
                                                 <span className='number-comment'>({item?.comments?.length})</span>
                                             </Col>
 
@@ -590,7 +590,7 @@ const Home = () => {
                                             </Col>
 
                                             <Col span={24} className='rate-card'>
-                                                <Rate value={5} style={{ fontSize: 13 }} />
+                                                <Rate disabled value={item?.comments?.length > 0 ? 5 : 0} style={{ fontSize: 13 }} />
                                                 <span className='number-comment'>({item?.comments.length})</span>
                                             </Col>
 
@@ -766,7 +766,7 @@ const Home = () => {
 
                                             </Col>
                                             <Col span={24} className='rate-card'>
-                                                <Rate value={5} style={{ fontSize: 13 }} />
+                                                <Rate disabled value={item?.comments?.length > 0 ? 5 : 0} style={{ fontSize: 13 }} />
                                                 <span className='number-comment'>({item?.comments.length})</span>
                                             </Col>
                                             <Col span={24} className='sold-card sold-shopping'>
@@ -937,7 +937,7 @@ const Home = () => {
 
                                             </Col>
                                             <Col span={24} className='rate-card'>
-                                                <Rate value={5} style={{ fontSize: 13 }} />
+                                                <Rate disabled value={item?.comments?.length > 0 ? 5 : 0} style={{ fontSize: 13 }} />
                                                 <span className='number-comment'>({item?.comments.length})</span>
                                             </Col>
                                             <Col span={24} className='sold-card sold-shopping'>

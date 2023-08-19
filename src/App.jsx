@@ -33,6 +33,7 @@ import { Col, message, Row } from "antd";
 import SiderAccount from "./pages/AccountPage/SiderAccount";
 import ListAddress from "./pages/AccountPage/ListAddress";
 import DealHotPage from "./pages/DealHotPage/DealHotPage";
+import PageMenu from "./pages/DealHotPage/PageMenu";
 
 
 
@@ -142,6 +143,10 @@ function App() {
       {
         path: 'xu-huong-mua-sam',
         element: <DealHotPage />
+      },
+      {
+        path: 'page-menu/:slug',
+        element: <PageMenu />
       }
       ]
     },

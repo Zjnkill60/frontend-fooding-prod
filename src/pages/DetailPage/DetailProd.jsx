@@ -544,7 +544,7 @@ const DetailProd = () => {
                                             </Row>
                                         </Col>
                                         <Col span={24} className="rate-prod" style={{ display: 'flex', alignItems: 'center', marginTop: 5 }}>
-                                            <Rate value={5} style={{ color: 'f6a500', fontSize: 14 }} />
+                                            <Rate disabled value={dataProd?.comments?.length > 0 ? 5 : 0} style={{ color: 'f6a500', fontSize: 14 }} />
                                             <span style={{ marginLeft: 10, color: '#f6a500', marginTop: 1, fontWeight: 500 }}>({comments?.length} đánh giá)</span>
                                         </Col>
                                         {dataProd?.isFlashsale ?
@@ -854,7 +854,7 @@ const DetailProd = () => {
 
                                             </Col>
                                             <Col span={24} className='rate-card'>
-                                                <Rate value={5} style={{ fontSize: 13 }} />
+                                                <Rate disabled value={item?.comments?.length > 0 ? 5 : 0} style={{ fontSize: 13 }} />
                                                 <span className='number-comment'>({item?.comments?.length})</span>
                                             </Col>
                                             <Col span={24} className='sold-card sold-shopping'>
