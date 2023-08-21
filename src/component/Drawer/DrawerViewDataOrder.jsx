@@ -26,6 +26,7 @@ const DrawerViewOrder = (props) => {
                     <Descriptions.Item span={2} label="Số Điện Thoại">{dataClick?.phoneNumber}</Descriptions.Item>
                     <Descriptions.Item span={1} label="Email">{dataClick?.email}</Descriptions.Item>
                     <Descriptions.Item span={3} label="Địa Chỉ">{dataClick?.address}</Descriptions.Item>
+                    <Descriptions.Item span={3} label="Giờ Giao Hàng">{dataClick?.date}</Descriptions.Item>
 
                     <Descriptions.Item label="Status" span={2}>
                         <Badge status="processing" text={dataClick?.status} />

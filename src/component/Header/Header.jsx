@@ -208,11 +208,11 @@ const Header = () => {
 
     const content = (
         <Row style={{ maxWidth: 500 }}>
-            <Row className="cart-header-list-item" style={{ maxHeight: 300, overflow: 'scroll' }}>
-                {dataCart?.items?.length > 0 ? dataCart.items.map((item, index) => {
+            <Row className="cart-header-list-item" style={{ maxHeight: 300, overflow: 'scroll', width: '100%' }}>
+                {dataCart?.items?.length > 0 ? dataCart.items.map((item) => {
                     return (
                         <>
-                            <Col onClick={() => handleNavigateDetailPage(item)} span={24} style={{ marginTop: 10, cursor: 'pointer' }}>
+                            <Col onClick={() => handleNavigateDetailPage(item)} span={24} style={{ marginTop: 10, cursor: 'pointer', width: '100%' }}>
 
                                 <Row >
                                     <Col span={5}>

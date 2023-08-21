@@ -21,11 +21,6 @@ const columns = [
 
     },
     {
-        title: 'Tên',
-        dataIndex: 'name',
-
-    },
-    {
         title: 'SĐT',
         dataIndex: 'phoneNumber',
 
@@ -38,6 +33,12 @@ const columns = [
     {
         title: 'Tổng Tiền',
         dataIndex: 'totalPrice',
+
+    },
+    {
+        title: 'Giờ Giao Hàng',
+        dataIndex: 'date',
+        sorter: true
 
     },
     {
@@ -158,6 +159,7 @@ const ManageOrder = () => {
                     address: item?.address,
                     totalPrice: formatter.format(item?.totalPrice),
                     orderCode: item?.orderCode,
+                    date: item?.date,
                     payments: item?.payments,
                     status: item?.status,
                     createdAt: moment(item?.createdAt).format('YYYY-MM-DD HH:mm:ss'),

@@ -47,7 +47,7 @@ const Shipper = (props) => {
 
     const items = [
         {
-            key: 'Xác nhận thành công',
+            key: 'Đang giao',
             label: `Cần giao (${orderStatusLength?.lengthRunning})`,
             children: <>
                 {listOrder && listOrder?.length > 0 ? listOrder.map((item, index) => {
@@ -219,7 +219,7 @@ const Shipper = (props) => {
 
 
     useEffect(() => {
-        findOrderForShipper(user?.info?._id, "Xác nhận thành công")
+        findOrderForShipper(user?.info?._id, "Đang giao")
         fetchLengthOrerStatus()
     }, [])
 

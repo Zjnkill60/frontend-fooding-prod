@@ -1,13 +1,14 @@
-import { Avatar, Badge, Button, Col, Divider, Form, Input, Radio, Result, Row, Space, Spin, message } from "antd"
-import { useEffect, useState } from "react"
+import { Avatar, Badge, Button, Col, Divider, Form, Input, Radio, Result, Row, Space, message } from "antd"
+import { useEffect, useRef, useState } from "react"
 import { Link, useNavigate } from "react-router-dom"
-import { ArrowLeftOutlined, CopyOutlined, LoadingOutlined, PlusCircleOutlined } from '@ant-design/icons'
+import { ArrowLeftOutlined, CopyOutlined, LoadingOutlined, PlusCircleOutlined, CalendarOutlined } from '@ant-design/icons'
 import './checkout.scss'
 import { useForm } from "antd/es/form/Form"
 import { useDispatch, useSelector } from "react-redux"
 import { handleCreateOrder, handleFindOneShipper } from "../../service/api"
 import { doOrderSuccess } from "../../redux/order/orderSlice"
 import ModalUpdateListAddress from "../../component/Modal/ModalUpdateListAddress"
+import CalendarOrder from "./CalendarOrder"
 
 
 const baseURL = import.meta.env.VITE_URL_BACKEND
@@ -24,8 +25,14 @@ const onFinishFailed = (errorInfo) => {
 };
 
 const Checkout = () => {
+    const ref = useRef()
     const [isModalOpen, setIsModalOpen] = useState(false)
     const [value, setValue] = useState(1);
+    const [valueDelivery, setValueDelivery] = useState('now');
+    //calendar
+    const [valueCalendar, setValueCalendar] = useState(null);
+    const [valueSelectTime, setValueSelectTime] = useState(null);
+
     const [isLoading, setIsLoading] = useState(false)
     const [isFinish, setIsFinish] = useState(false)
     const [data, setData] = useState(null)
@@ -40,6 +47,17 @@ const Checkout = () => {
     const dispatch = useDispatch()
 
     const onFinish = async (values) => {
+        if (valueDelivery == "delivery") {
+            if (!valueCalendar || !valueSelectTime) {
+                message.error("Vui lòng chọn thời gian giao hàng !")
+                ref.current.scrollIntoView({
+                    block: 'center',
+                    behavior: 'smooth',
+                    inline: 'start'
+                });
+                return
+            }
+        }
         const { name, phoneNumber, email, address } = values
         let payments = value == 1 ? 'cash' : 'banking'
         let item = dataCart.map(prod => {
@@ -53,7 +71,7 @@ const Checkout = () => {
         })
         setIsLoading(true)
 
-        let res = await handleCreateOrder(name, email, phoneNumber, address, totalPrice, "Chờ xác nhận", undefined, item, payments, `#${formBanking[3]}`)
+        let res = await handleCreateOrder(name, email, phoneNumber, address, totalPrice, "Chờ xác nhận", undefined, item, payments, `#${formBanking[3]}`, undefined, valueDelivery == "now" ? "Giao Ngay" : `${valueCalendar} - ${valueSelectTime}`)
 
         setIsLoading(false)
         console.log(res)
@@ -69,8 +87,10 @@ const Checkout = () => {
     };
 
     const onChange = (e) => {
-
         setValue(e.target.value);
+    };
+    const onChangeDelivery = (e) => {
+        setValueDelivery(e.target.value);
     };
 
     const onChangeAddress = (e) => {
@@ -108,6 +128,18 @@ const Checkout = () => {
 
     const handleSubmitOrder = async () => {
         if (dataAccount?.isAuthenticated) {
+            if (valueDelivery == "delivery") {
+                if (!valueCalendar || !valueSelectTime) {
+                    message.error("Vui lòng chọn thời gian giao hàng !")
+                    ref.current.scrollIntoView({
+                        block: 'center',
+                        behavior: 'smooth',
+                        inline: 'start'
+                    });
+                    return
+                }
+            }
+
             if (addressOrder) {
                 const { name, phoneNumber, email, address } = addressOrder
                 let payments = value == 1 ? 'cash' : 'banking'
@@ -121,7 +153,7 @@ const Checkout = () => {
                     }
                 })
                 setIsLoading(true)
-                let res = await handleCreateOrder(name, email, phoneNumber, address, totalPrice, "Chờ xác nhận", undefined, item, payments, `#${formBanking[3]}`, dataAccount?.info?._id)
+                let res = await handleCreateOrder(name, email, phoneNumber, address, totalPrice, "Chờ xác nhận", undefined, item, payments, `#${formBanking[3]}`, dataAccount?.info?._id, valueDelivery == "now" ? "Giao Ngay" : `${valueCalendar} - ${valueSelectTime}`)
 
                 setIsLoading(false)
                 console.log(res)
@@ -303,6 +335,42 @@ const Checkout = () => {
                                     </Col>}
                                 </Row>
 
+                            </Col>
+
+                            <Col ref={ref} span={24} style={{ backgroundColor: '#fff', padding: '10px 20px', marginTop: 20 }}>
+                                <Row >
+                                    <Col span={24} style={{ fontSize: 16, fontWeight: 500, color: '#333s' }}>
+                                        <span>THỜI GIAN GIAO HÀNG</span>
+                                    </Col>
+                                    <Divider style={{ margin: '15px 0' }} />
+                                    <Col >
+                                        <Radio.Group onChange={onChangeDelivery} value={valueDelivery} >
+                                            <Space direction="vertical">
+                                                <Radio value={'now'} >
+                                                    <div style={{ display: 'flex', alignItems: 'center', marginTop: 3, marginLeft: 10 }}>
+                                                        <img style={{ height: 45, width: 40, objectFit: 'cover' }} src="https://media.istockphoto.com/id/1249878801/vi/vec-to/giao-h%C3%A0ng-b%E1%BA%B1ng-xe-h%C6%A1i-van-icon-t%E1%BB%AB-giao-h%C3%A0ng-v%C3%A0-thu-th%E1%BA%ADp-h%E1%BA%ADu-c%E1%BA%A7n.jpg?s=612x612&w=0&k=20&c=DCXXaA_-TzDpOYhxazbycp_6lpSwKF3vpazrOEjhdgY=" />
+                                                        <span style={{ marginLeft: 14, color: '#333333' }}>Giao ngay
+                                                            <span style={{ color: '#c92127', marginLeft: 5, fontSize: 13 }}> (Giờ hành chính)</span>
+
+                                                        </span>
+                                                    </div>
+
+                                                </Radio>
+                                                <Radio value={'delivery'}>
+                                                    <div style={{ display: 'flex', alignItems: 'center', marginTop: 3, marginLeft: 17 }}>
+                                                        <img style={{ height: 25, width: 25, objectFit: 'cover' }} src="https://namythienduoc.com/wp-content/uploads/2021/05/appointment-icon-3-424x400.png" />
+                                                        <span style={{ marginLeft: 21, color: '#333333' }}>Đặt lịch giao hàng
+
+                                                        </span>
+                                                    </div>
+                                                </Radio>
+
+
+                                            </Space>
+                                        </Radio.Group>
+                                    </Col>
+                                    {valueDelivery == "delivery" ? <Col span={24}><CalendarOrder setValueCalendar={setValueCalendar} setValueSelectTime={setValueSelectTime} /></Col> : <></>}
+                                </Row>
                             </Col>
 
                             <Col span={24} style={{ backgroundColor: '#fff', padding: '10px 20px', marginTop: 20 }}>

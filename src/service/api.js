@@ -197,19 +197,19 @@ export const handleFindAllShipper = async () => {
 
 }
 
-export const handleCreateOrder = async (name, email, phoneNumber, address, totalPrice, status, shipper, item, payments, orderCode, idPerson) => {
+export const handleCreateOrder = async (name, email, phoneNumber, address, totalPrice, status, shipper, item, payments, orderCode, idPerson, date) => {
     console.log("idPerson : ", idPerson)
     if (idPerson) {
 
-        return await axios.post('orders', { name, email, phoneNumber, address, totalPrice, status, shipper, item, payments, orderCode, idPerson })
+        return await axios.post('orders', { name, email, phoneNumber, address, totalPrice, status, shipper, item, payments, orderCode, idPerson, date })
 
     }
-    return await axios.post('orders', { name, email, phoneNumber, address, totalPrice, status, shipper, item, payments, orderCode })
+    return await axios.post('orders', { name, email, phoneNumber, address, totalPrice, status, shipper, item, payments, orderCode, date })
 }
 
 
-export const handleUpdateOrder = async (id, name, email, phoneNumber, address, totalPrice, status, shipper, item) => {
-    return await axios.patch(`orders/${id}`, { name, email, phoneNumber, address, totalPrice, status, shipper, item })
+export const handleUpdateOrder = async (id, name, email, phoneNumber, address, totalPrice, status, shipper, item, payments, date) => {
+    return await axios.patch(`orders/${id}`, { name, email, phoneNumber, address, totalPrice, status, shipper, item, payments, date })
 }
 
 export const handleRejectOrder = async (id, status, reasonReject) => {

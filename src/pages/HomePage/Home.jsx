@@ -163,7 +163,6 @@ const Home = () => {
     }
 
     useEffect(() => {
-        document.title = "Nhà sách trực tuyến | FAHASA.COM"
         let timeIntever = setInterval(() => {
             handleMoveRightBanner()
         }, 5000);

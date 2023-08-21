@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { PlusCircleOutlined, MinusCircleOutlined, LoadingOutlined } from '@ant-design/icons';
 import { handleFetchAllProd, handleFindAllShipper, handleFindOneProd, handleUpdateOrder } from '../../service/api';
 import * as uuid from 'uuid'
+import CalendarOrder from '../../pages/CheckoutPage/CalendarOrder';
 const baseURL = import.meta.env.VITE_URL_BACKEND
 
 
@@ -13,6 +14,11 @@ const ModalUpdateOrder = (props) => {
     const { isModalOpen, setIsModalOpen, getAllOrders, dataClick, setCurrent } = props
     const [dataShipperSelect, setDataShipperSelect] = useState([])
     const [dataProductSelect, setDataProductSelect] = useState([])
+    //
+    const [valueStatusSelect, setValueStatusSelect] = useState(null)
+    const [valueDeliverySelect, setValueDeliverySelect] = useState(null)
+    const [valueCalendar, setValueCalendar] = useState(null);
+    const [valueSelectTime, setValueSelectTime] = useState(null);
 
     const [dataItemOrder, setDataItemOrder] = useState([{
         uid: uuid.v4(),
@@ -36,13 +42,23 @@ const ModalUpdateOrder = (props) => {
     };
 
     const onFinish = async (values) => {
-
-        const { name, email, phoneNumber, address, totalPrice, status, person } = values
+        if (valueDeliverySelect == "calendar") {
+            if (!valueCalendar || !valueSelectTime) {
+                message.error("Vui lòng chọn thời gian giao hàng !")
+                ref.current.scrollIntoView({
+                    block: 'center',
+                    behavior: 'smooth',
+                    inline: 'start'
+                });
+                return
+            }
+        }
+        const { name, email, phoneNumber, address, totalPrice, status, person, payments } = values
         let shipper = person?.value ? person.value : person
         let prefixEmail = email.concat("@gmail.com")
 
         setIsLoading(true)
-        let res = await handleUpdateOrder(dataClick?._id, name, prefixEmail, phoneNumber, address, totalPrice, status, shipper, dataItemOrder)
+        let res = await handleUpdateOrder(dataClick?._id, name, prefixEmail, phoneNumber, address, totalPrice, status, shipper, dataItemOrder, payments, valueDeliverySelect == "now" ? "Giao Ngay" : `${valueCalendar} - ${valueSelectTime}`)
         setIsLoading(false)
         if (res && res.data) {
             message.success('Cập nhật đơn hàng thành công !')
@@ -138,18 +154,29 @@ const ModalUpdateOrder = (props) => {
         setDataItemOrder(newArray)
     }
 
+    const handleChangeSelectStatus = (value) => {
+        setValueStatusSelect(value)
+    }
+    const handleChangeSelectDelivery = (value) => {
+        setValueDeliverySelect(value)
+    }
+
     useEffect(() => {
         let newEmail = dataClick?.email?.substring(0, (dataClick?.email.indexOf("@")))
         getAllShipperSelect()
         getAllProductSelect()
         setDataItemOrder(dataClick?.item)
+        setValueDeliverySelect(dataClick?.date == "Giao Ngay" ? "now" : "calendar")
+        setValueStatusSelect(dataClick?.status)
         form.setFieldsValue({
-            status: "Xác nhận thành công",
+            status: dataClick?.status,
             name: dataClick?.name,
             email: newEmail,
             address: dataClick?.address,
             phoneNumber: dataClick?.phoneNumber,
             totalPrice: dataClick?.totalPrice,
+            payments: dataClick?.payments,
+            date: dataClick?.date == "Giao Ngay" ? "Giao Ngay" : "Đặt lịch",
             person: dataClick?.shipper ? {
                 value: dataClick?.shipper?._id ? dataClick?.shipper?._id : undefined,
                 label: dataClick?.shipper?.name ? `${dataClick?.shipper?.name} - ${dataClick?.shipper?.phoneNumber}` : undefined
@@ -275,7 +302,7 @@ const ModalUpdateOrder = (props) => {
                                 ]}
                             >
                                 <Select
-
+                                    onChange={handleChangeSelectStatus}
                                     style={{ textAlign: 'center' }}
                                     options={[
                                         {
@@ -287,36 +314,107 @@ const ModalUpdateOrder = (props) => {
                                             label: 'Xác nhận thành công',
                                         },
                                         {
+                                            value: 'Đang giao',
+                                            label: 'Đang giao',
+                                        }
+                                        ,
+                                        {
                                             value: 'Từ chối',
                                             label: 'Từ chối',
-                                        },
-
+                                        }
 
                                     ]}
                                 />
                             </Form.Item>
                         </Col>
-
                         <Col span={8}>
 
                             <Form.Item
                                 labelCol={{ span: 24 }}
-                                label="Người Giao"
-                                name="person"
+                                label="PTTT"
+                                name="payments"
                                 rules={[
                                     {
                                         required: true,
-                                        message: 'Vui lòng chọn người giao ',
+                                        message: 'Vui lòng nhập trạng thái ',
                                     },
                                 ]}
                             >
                                 <Select
 
                                     style={{ textAlign: 'center' }}
-                                    options={dataShipperSelect}
+                                    options={[
+                                        {
+                                            value: 'cash',
+                                            label: 'cash',
+                                        },
+                                        {
+                                            value: 'banking',
+                                            label: 'banking (ship không cần thu tiền)',
+                                        }
+                                    ]}
                                 />
                             </Form.Item>
                         </Col>
+
+                        <Col span={6}>
+
+                            <Form.Item
+                                labelCol={{ span: 24 }}
+                                label="Thời Gian Giao Hàng"
+                                name="date"
+                                rules={[
+                                    {
+                                        required: true,
+                                        message: 'Vui lòng nhập trạng thái ',
+                                    },
+                                ]}
+                            >
+                                <Select
+                                    onChange={handleChangeSelectDelivery}
+                                    style={{ textAlign: 'center' }}
+                                    options={[
+                                        {
+                                            value: 'now',
+                                            label: 'Giao Ngay',
+                                        },
+                                        {
+                                            value: 'calendar',
+                                            label: 'Đặt lịch',
+                                        }
+                                    ]}
+                                />
+                            </Form.Item>
+                        </Col>
+
+                        {valueDeliverySelect == "calendar" ?
+                            <Col span={12} style={{ marginTop: 20 }}>
+                                <CalendarOrder setValueCalendar={setValueCalendar} setValueSelectTime={setValueSelectTime} />
+
+                            </Col > : <></>}
+
+                        {valueStatusSelect == "Đang giao" ?
+                            <Col span={6}>
+
+                                <Form.Item
+                                    labelCol={{ span: 24 }}
+                                    label="Người Giao"
+                                    name="person"
+                                    rules={[
+                                        {
+                                            required: true,
+                                            message: 'Vui lòng chọn người giao ',
+                                        },
+                                    ]}
+                                >
+                                    <Select
+
+                                        style={{ textAlign: 'center' }}
+                                        options={dataShipperSelect}
+                                    />
+                                </Form.Item>
+                            </Col> : <></>}
+
                     </Row>
 
                     <Row gutter={20} style={{ marginTop: 10 }}>
