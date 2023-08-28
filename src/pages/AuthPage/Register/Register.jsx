@@ -97,7 +97,7 @@ const Register = (props) => {
                 clearTimeout(timeout)
                 return
             }
-            setTimeout(() => {
+            timeout = setTimeout(() => {
                 setCountDownNumber(number => number - 1)
             }, 1000);
         } else {

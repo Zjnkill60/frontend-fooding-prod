@@ -107,7 +107,7 @@ const ModalSendSMS = (props) => {
                 clearTimeout(timeout)
                 return
             }
-            setTimeout(() => {
+            timeout = setTimeout(() => {
                 setCountDownNumber(number => number - 1)
             }, 1000);
         } else {
@@ -118,67 +118,69 @@ const ModalSendSMS = (props) => {
         <>
 
             <Modal cancelButtonProps={{ style: { display: 'none' } }} okButtonProps={{ style: { display: 'none' } }} open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
-                <Form
+                <div style={{ padding: '30px 20px' }}>
+                    <Form
 
-                    name="form-modal-sendsms"
-                    onFinish={onFinish}
+                        name="form-modal-sendsms"
+                        onFinish={onFinish}
 
-                >
-                    <div style={{ position: 'relative' }}>
+                    >
+                        <div style={{ position: 'relative' }}>
+                            <Form.Item
+                                label={<span style={{ fontSize: 15, color: '#a1a1a1' }}>Số điện thoại</span>}
+                                name="phoneNumber"
+                                labelCol={{ span: 24 }}
+                                rules={[
+                                    {
+                                        required: true,
+                                        message: 'Vui lòng điền trường này !',
+                                    },
+                                ]}
+                            >
+                                <Input onChange={(e) => setPhoneNumberInput(e.target.value)} type='number' size='large' placeholder=' Số điện thoại (10 số)' className='input-auth' />
+                            </Form.Item>
+                            {isCountDown ? <span className='txt-countdown'>({countDownNumber}s)</span> :
+                                <span onClick={handleSendOTP} className='txt-countdown'>{isLoading ? <LoadingOutlined style={{ fontSize: 23 }} /> : 'Gửi mã OTP'}</span>}
+                        </div>
+
                         <Form.Item
-                            label={<span style={{ fontSize: 15, color: '#a1a1a1' }}>Số điện thoại</span>}
-                            name="phoneNumber"
+                            label={<span style={{ fontSize: 15, color: '#a1a1a1' }}>Mã xác nhận OTP</span>}
+                            name="otp"
                             labelCol={{ span: 24 }}
                             rules={[
                                 {
                                     required: true,
-                                    message: 'Vui lòng điền trường này !',
+                                    message: 'Vui lòng điền mã OTP !',
                                 },
                             ]}
                         >
-                            <Input onChange={(e) => setPhoneNumberInput(e.target.value)} type='number' size='large' placeholder=' Số điện thoại (10 số)' className='input-auth' />
+                            <Input value={otpInput} disabled={!isSendSMS} type='number' onChange={(e) => handleChangeInputOTP(e.target.value)} size='large' placeholder='6 kí tự' />
+                            {isLoadingOTP ? <span className='txt-send-otp'> <LoadingOutlined style={{ fontSize: 23 }} /> </span> : <></>}
+                            {isValidateOTP ? <>
+                                <CheckCircleOutlined style={{ fontSize: 23, color: 'green' }} className={'txt-send-otp'} />
+                            </> : <></>}
+                            {isFalseValidate && otpInput.length >= 6 ? <>
+                                <CloseCircleOutlined style={{ fontSize: 23, color: 'red' }} className={'txt-send-otp'} />
+                            </> : <></>}
+
+
                         </Form.Item>
-                        {isCountDown ? <span className='txt-countdown'>({countDownNumber}s)</span> :
-                            <span onClick={handleSendOTP} className='txt-countdown'>{isLoading ? <LoadingOutlined style={{ fontSize: 23 }} /> : 'Gửi mã OTP'}</span>}
-                    </div>
 
-                    <Form.Item
-                        label={<span style={{ fontSize: 15, color: '#a1a1a1' }}>Mã xác nhận OTP</span>}
-                        name="otp"
-                        labelCol={{ span: 24 }}
-                        rules={[
-                            {
-                                required: true,
-                                message: 'Vui lòng điền mã OTP !',
-                            },
-                        ]}
-                    >
-                        <Input value={otpInput} disabled={!isSendSMS} type='number' onChange={(e) => handleChangeInputOTP(e.target.value)} size='large' placeholder='6 kí tự' />
-                        {isLoadingOTP ? <span className='txt-send-otp'> <LoadingOutlined style={{ fontSize: 23 }} /> </span> : <></>}
-                        {isValidateOTP ? <>
-                            <CheckCircleOutlined style={{ fontSize: 23, color: 'green' }} className={'txt-send-otp'} />
-                        </> : <></>}
-                        {isFalseValidate && otpInput.length >= 6 ? <>
-                            <CloseCircleOutlined style={{ fontSize: 23, color: 'red' }} className={'txt-send-otp'} />
-                        </> : <></>}
+                        <Form.Item
 
+                        >
+                            <Row style={{ marginTop: 20 }}>
+                                <Col span={17} style={{ margin: '0 auto' }}>
+                                    <Button className='btn-login' size='large' style={{ margin: '0 auto', width: '100%', height: 45, backgroundColor: '#C92127' }}
+                                        type="primary" htmlType="submit">
+                                        Xác nhận
+                                    </Button>
+                                </Col>
 
-                    </Form.Item>
-
-                    <Form.Item
-
-                    >
-                        <Row style={{ marginTop: 20 }}>
-                            <Col span={17} style={{ margin: '0 auto' }}>
-                                <Button className='btn-login' size='large' style={{ margin: '0 auto', width: '100%', height: 45, backgroundColor: '#C92127' }}
-                                    type="primary" htmlType="submit">
-                                    Xác nhận
-                                </Button>
-                            </Col>
-
-                        </Row>
-                    </Form.Item>
-                </Form>
+                            </Row>
+                        </Form.Item>
+                    </Form>
+                </div>
             </Modal>
         </>
     );
